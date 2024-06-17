@@ -1,5 +1,6 @@
 from transposer import *
+from tkinter import *
 
-chord1 = "Gmaj"
-chord2 = Transpose(chord1, 2)
-print(chord2)
+test_cp_str = "| C . . . | Am . . . | G . . . | F . . . |"
+test_cp = TransposeCP(test_cp_str)
+print(test_cp.ToString())
