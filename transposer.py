@@ -47,6 +47,3 @@ def Transpose(chord, semitones):
     if minor:
         new_chord += "m"
     return new_chord
-
-
-

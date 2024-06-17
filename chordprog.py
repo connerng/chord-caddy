@@ -1,27 +1,35 @@
 from transposer import *
 
 class ChordProgression:
-    def __init__(self, timeSig, key, chordProg):
-        self.timeSig = timeSig
-        self.key = key
-        self.chordProg = chordProg
+    chordProg = []
+    timeSig = ""
+    key = ""
     
-    def ToString(self):
-        return self.chordProg
-    
-    def TransposeCP(self, semitones):
+    def __init__(self, cp_str, timeSig, key):
         i = 0
         cp_str = ""
-        while i < len(self.chordProg):
-            cur = self.chordProg[i:self.chordProg.find(' ', i)]
-            i = self.chordProg.find(' ', i) + 1
-            if cur[0] in notes_f:
-                cp_str += Transpose(cur, semitones)
+        skip = 0
+        for i in range(0, len(cp_str)):
+            if skip > 0:
+                cur = cp_str[i]
+                if cur.isalpha():
+                    alpha = True
+                    while alpha:
+                        if cp_str[i+1].isalpha():
+                            cur += cp_str[i+1]
+                            i += 1
+                            skip += 1
+                        else:
+                            i += 1
+                            print('nonletter at ', i)
+                            alpha = False
+                self.chordProg.append(cur)
             else:
-                cp_str += cur
-        newKey = Transpose(self.key, semitones)
-        return ChordProgression(self.timeSig, newKey, cp_str)
+                skip -= 1
+            
+        self.key = key
+        self.timeSig = timeSig
 
+    def Print(self):
+        print(*self.chordProg)
 
-
-    
