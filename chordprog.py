@@ -6,9 +6,10 @@ class ChordProgression:
     timeSig = ""
     key = ""
     
-    def __init__(self, cp_str: str, timeSig: str, key: str):
+    def __init__(self, cpStr: str, timeSig: str, key: str):
         cur = ""
-        for c in cp_str:
+        self.chordProg = []
+        for c in cpStr:
             if c.isalpha():
                 cur += c
             else:
@@ -25,12 +26,18 @@ class ChordProgression:
             retVal += " " + self.chordProg[i]
         return retVal
 
-    def TransposeCP(self, semitones: int):
-        self.key = Transpose(self.key, semitones)
-        for i in range(0, len(self.chordProg)):
-            curItem = self.chordProg[i]
-            if curItem[0].isalpha():
-                self.chordProg[i] = Transpose(curItem, semitones)
+
+def TransposeCP(cp: ChordProgression, semitones: int):
+    cpStr = ""
+    newKey = Transpose(cp.key, semitones)
+    for item in cp.chordProg:
+        if item[0].isalpha():
+            cpStr += Transpose(item, semitones)
+        else:
+            cpStr += item
+    newProg = ChordProgression(cpStr, cp.timeSig, newKey)
+    return newProg
+
         
         
 
