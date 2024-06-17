@@ -1,35 +1,37 @@
 from transposer import *
+from typing import List
 
 class ChordProgression:
-    chordProg = []
+    chordProg: List[str] = []
     timeSig = ""
     key = ""
     
-    def __init__(self, cp_str, timeSig, key):
-        i = 0
-        cp_str = ""
-        skip = 0
-        for i in range(0, len(cp_str)):
-            if skip > 0:
-                cur = cp_str[i]
-                if cur.isalpha():
-                    alpha = True
-                    while alpha:
-                        if cp_str[i+1].isalpha():
-                            cur += cp_str[i+1]
-                            i += 1
-                            skip += 1
-                        else:
-                            i += 1
-                            print('nonletter at ', i)
-                            alpha = False
-                self.chordProg.append(cur)
+    def __init__(self, cp_str: str, timeSig: str, key: str):
+        cur = ""
+        for c in cp_str:
+            if c.isalpha():
+                cur += c
             else:
-                skip -= 1
-            
+                if len(cur) > 0:
+                    self.chordProg.append(cur)
+                cur = ""
+                self.chordProg.append(c)
         self.key = key
         self.timeSig = timeSig
 
-    def Print(self):
-        print(*self.chordProg)
+    def __str__(self):
+        retVal = self.chordProg[0]
+        for i in range(1, len(self.chordProg)):
+            retVal += " " + self.chordProg[i]
+        return retVal
+
+    def TransposeCP(self, semitones: int):
+        self.key = Transpose(self.key, semitones)
+        for i in range(0, len(self.chordProg)):
+            curItem = self.chordProg[i]
+            if curItem[0].isalpha():
+                self.chordProg[i] = Transpose(curItem, semitones)
+        
+        
+
 
