@@ -4,23 +4,6 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo
 from chordprog import *
 
-# test_cp_str = "|C...|Am...|G...|F...|"
-# test_str_2 = "|Am...|C...|Em...|D...|"
-# cp = ChordProgression(test_cp_str, "4/4", "C")
-# print(cp.timeSig)
-# print(cp.key)
-# print(cp)
-
-# cp2 = ChordProgression(test_str_2, "4/4", "G")
-# print(cp2.timeSig)
-# print(cp2.key)
-# print(cp2)
-
-# cp3 = TransposeCP(cp, 1)
-# print(cp3.timeSig)
-# print(cp3.key)
-# print(cp3)
-
 chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
           'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
           'G#', 'G#m']
@@ -46,32 +29,65 @@ lbl_measure3.grid(column=0, row=4)
 lbl_measure4 = ttk.Label(root, text="Measure 4")
 lbl_measure4.grid(column=0, row=5)
 
-
-
-timeSig = tk.StringVar()
-timeSigs = ttk.Combobox(root, values=('4/4', '6/8'), state='readonly', width=4, textvariable=timeSig)
-timeSigs.grid(column=1, row=0)
-key = tk.StringVar()
-keys = ttk.Combobox(root, values=keys, state='readonly', width=4, textvariable=key)
-keys.grid(column=1,row=1)
-
+time_signature = "4/4"
 chordProgCB = []
 for r in range(2, 6):
     for col in range(1, 5):
-        cur = ttk.Combobox(root, values=chords, state='readonly', width=4)
+        cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
         cur.current(0)
         cur.grid(column=col, row=r)
         chordProgCB.append(cur)
 
 
+def ts_44_clicked():
+    for cb in chordProgCB:
+        cb.destroy()
+    chordProgCB = []
+    for r in range(2, 6):
+        for col in range(1, 5):
+            cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
+            cur.current(0)
+            cur.grid(column=col, row=r)
+            chordProgCB.append(cur)
+
+timeSig_44 = ttk.Button(root, text="4/4", width=5, command=ts_44_clicked)
+timeSig_44.grid(column=1, row=0)
+
+def ts_68_clicked():
+    for cb in chordProgCB:
+        cb.destroy()
+    chordProgCB = []
+    for r in range(2, 6):
+        for col in range(1, 7):
+            cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
+            cur.current(0)
+            cur.grid(column=col, row=r)
+            chordProgCB.append(cur)
+
+timeSig_68 = ttk.Button(root, text="6/8", width=5, command=ts_68_clicked)
+timeSig_68.grid(column=2, row=0)
+
+key = tk.StringVar()
+keys = ttk.Combobox(root, values=keys, state='readonly', width=5, textvariable=key)
+keys.grid(column=1,row=1)
+
+
+
 
 def clicked():
-    cpStr = "|"
-    for i in range(0, len(chordProgCB)):
-        cpStr += chordProgCB[i].get()
-        if (i+1)%4 == 0:
-            cpStr += "|"
-    cp = ChordProgression(cpStr, timeSig.get(), key.get())
+    if time_signature == "4/4":
+        cpStr = "|"
+        for i in range(0, len(chordProgCB)):
+            cpStr += chordProgCB[i].get()
+            if (i+1)%4 == 0:
+                cpStr += "|"
+    else:
+        cpStr = "|"
+        for i in range(0, len(chordProgCB)):
+            cpStr += chordProgCB[i].get()
+            if (i+1)%6 == 0:
+                cpStr += "|"
+    cp = ChordProgression(cpStr, time_signature, key.get())
     showinfo(title="New Chord Progression", message=cp.ToString())
 
 saveButton = ttk.Button(root, text="Save", width=50, command=clicked)
