@@ -39,6 +39,13 @@ lbl_key.grid(column=0, row=1)
 
 lbl_measure1 = ttk.Label(root, text="Measure 1")
 lbl_measure1.grid(column=0, row=2)
+lbl_measure2 = ttk.Label(root, text="Measure 2")
+lbl_measure2.grid(column=0, row=3)
+lbl_measure3 = ttk.Label(root, text="Measure 3")
+lbl_measure3.grid(column=0, row=4)
+lbl_measure4 = ttk.Label(root, text="Measure 4")
+lbl_measure4.grid(column=0, row=5)
+
 
 
 timeSig = tk.StringVar()
@@ -48,31 +55,27 @@ key = tk.StringVar()
 keys = ttk.Combobox(root, values=keys, state='readonly', width=4, textvariable=key)
 keys.grid(column=1,row=1)
 
-m1b1_chord = tk.StringVar()
-m1b1 = ttk.Combobox(root, values=chords, state='readonly', width=4, textvariable=m1b1_chord)
-m1b1.grid(column=1,row=2)
-m1b2_chord = tk.StringVar()
-m1b2 = ttk.Combobox(root, values=chords, state='readonly', width=4, textvariable=m1b2_chord)
-m1b2.grid(column=2,row=2)
-m1b3_chord = tk.StringVar()
-m1b3 = ttk.Combobox(root, values=chords, state='readonly', width=4, textvariable=m1b3_chord)
-m1b3.grid(column=3,row=2)
-m1b4_chord = tk.StringVar()
-m1b4 = ttk.Combobox(root, values=chords, state='readonly', width=4, textvariable=m1b4_chord)
-m1b4.grid(column=4,row=2)
+chordProgCB = []
+for r in range(2, 6):
+    for col in range(1, 5):
+        cur = ttk.Combobox(root, values=chords, state='readonly', width=4)
+        cur.current(0)
+        cur.grid(column=col, row=r)
+        chordProgCB.append(cur)
 
 
 
 def clicked():
-    cpStr = m1b1_chord.get() + "|" + m1b2_chord.get() + "|" + m1b3_chord.get() + "|" + m1b4_chord.get()
+    cpStr = "|"
+    for i in range(0, len(chordProgCB)):
+        cpStr += chordProgCB[i].get()
+        if (i+1)%4 == 0:
+            cpStr += "|"
     cp = ChordProgression(cpStr, timeSig.get(), key.get())
     showinfo(title="New Chord Progression", message=cp.ToString())
 
-showChords = ttk.Label(root, text="Chord Progression")
-showChords.grid(column=0, row=4)
-
 saveButton = ttk.Button(root, text="Save", width=50, command=clicked)
-saveButton.grid(column=0, row=3)
+saveButton.grid(column=0, row=6)
 
 
 
