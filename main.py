@@ -3,7 +3,6 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
 from chordprog import *
-from view import ShowNewProgression
 
 chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
           'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
@@ -49,24 +48,18 @@ key = tk.StringVar()
 keys = ttk.Combobox(root, values=keys, state='readonly', width=5, textvariable=key)
 keys.place(x=75, y=55)
 
-
+chordDisplay = ttk.Label(root, text="", font=('Helvetica', 16), background="light yellow")
+chordDisplay.place(x=290, y=100)
 
 
 def save_clicked():
-    if time_signature == "4/4":
-        cpStr = "|"
-        for i in range(0, len(chordProgCB)):
-            cpStr += chordProgCB[i].get()
-            if (i+1)%4 == 0:
-                cpStr += "|"
-    else:
-        cpStr = "|"
-        for i in range(0, len(chordProgCB)):
-            cpStr += chordProgCB[i].get()
-            if (i+1)%6 == 0:
-                cpStr += "|"
+    cpStr = "|"
+    for i in range(0, len(chordProgCB)):
+        cpStr += chordProgCB[i].get()
+        if (i+1)%4 == 0:
+            cpStr += "|"
     cp = ChordProgression(cpStr, time_signature, key.get())
-    ShowNewProgression(root, cp.ToString())
+    chordDisplay['text'] = cp.ToString()
 
 saveButton = ttk.Button(root, text="Save", width=25, command=save_clicked)
 saveButton.place(x=10, y=185)
@@ -79,7 +72,9 @@ def transpose_clicked():
             cpStr += "|"
     cp = ChordProgression(cpStr, time_signature, key.get())
     cp = TransposeCP(cp, semitoneScale.get())
-    ShowNewProgression(root, cp.ToString())
+    cp_new = cp.ToString()
+    print(cp_new)
+    chordDisplay['text'] = cp.ToString()
 
 transposeButton = ttk.Button(root, text = "Transpose", width=25, command=transpose_clicked)
 transposeButton.place(x=10, y=300)
