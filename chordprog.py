@@ -1,10 +1,15 @@
 from transposer import *
 from typing import List
 
+flatKeys = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb"]
+sharpKeys = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#"]
+
 class ChordProgression:
     chordProg: List[str] = []
     timeSig = ""
     key = ""
+    scale = []
+    sf = ""
     
     def __init__(self, cpStr: str, timeSig: str, key: str):
         cur = ""
@@ -21,6 +26,11 @@ class ChordProgression:
             self.chordProg.append(cur)
         self.key = key
         self.timeSig = timeSig
+        if key in flatKeys:
+            sf = "f"
+        else:
+            sf = "s"
+        
 
     def __str__(self):
         retVal = self.chordProg[0]
@@ -37,10 +47,14 @@ class ChordProgression:
 
 def TransposeCP(cp: ChordProgression, semitones: int):
     cpStr = ""
-    newKey = Transpose(cp.key, semitones)
+    newKey = Transpose(cp.key, semitones, cp.sf)
+    if newKey in flatKeys:
+        newSF = "f"
+    else:
+        newSF = "s"
     for item in cp.chordProg:
         if item[0].isalpha():
-            cpStr += Transpose(item, semitones)
+            cpStr += Transpose(item, semitones, newSF)
         else:
             cpStr += item
     newProg = ChordProgression(cpStr, cp.timeSig, newKey)
