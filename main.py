@@ -10,6 +10,29 @@ chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 
 
 keys = ['Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
 
+def save_clicked():
+    cpStr = "|"
+    for i in range(0, len(chordProgCB)):
+        cpStr += chordProgCB[i].get()
+        if (i+1)%4 == 0:
+            cpStr += "|"
+    cp = ChordProgression(cpStr, time_signature, key.get())
+    chordsDisplay['text'] = cp.ToString()
+    keyDisplay['text'] = "Key: " + cp.key
+
+def transpose_clicked():
+    cpStr = "|"
+    for i in range(0, len(chordProgCB)):
+        cpStr += chordProgCB[i].get()
+        if (i+1)%4 == 0:
+            cpStr += "|"
+    cp = ChordProgression(cpStr, time_signature, key.get())
+    cp = TransposeCP(cp, semitoneScale.get())
+    cp_new = cp.ToString()
+    print(cp_new)
+    chordsDisplay['text'] = cp.ToString()
+    keyDisplay['text'] = "Key: " + cp.key
+
 root = tk.Tk()
 root.title("Chord Transposer")
 root.geometry('750x450')
@@ -48,36 +71,18 @@ key = tk.StringVar()
 keys = ttk.Combobox(root, values=keys, state='readonly', width=5, textvariable=key)
 keys.place(x=75, y=55)
 
-chordDisplay = ttk.Label(root, text="", font=('Helvetica', 16), background="light yellow")
-chordDisplay.place(x=290, y=100)
+chordsDisplay = ttk.Label(root, text="| . . . . | . . . . | . . . . | . . . . |", font=('Helvetica', 16), background="light yellow")
+chordsDisplay.place(x=290, y=100)
 
-
-def save_clicked():
-    cpStr = "|"
-    for i in range(0, len(chordProgCB)):
-        cpStr += chordProgCB[i].get()
-        if (i+1)%4 == 0:
-            cpStr += "|"
-    cp = ChordProgression(cpStr, time_signature, key.get())
-    chordDisplay['text'] = cp.ToString()
+keyDisplay = ttk.Label(root, text="Key: ", font=('Helvetica', 16), background="light yellow")
+keyDisplay.place(x=290, y=70)
 
 saveButton = ttk.Button(root, text="Save", width=25, command=save_clicked)
 saveButton.place(x=10, y=185)
 
-def transpose_clicked():
-    cpStr = "|"
-    for i in range(0, len(chordProgCB)):
-        cpStr += chordProgCB[i].get()
-        if (i+1)%4 == 0:
-            cpStr += "|"
-    cp = ChordProgression(cpStr, time_signature, key.get())
-    cp = TransposeCP(cp, semitoneScale.get())
-    cp_new = cp.ToString()
-    print(cp_new)
-    chordDisplay['text'] = cp.ToString()
-
 transposeButton = ttk.Button(root, text = "Transpose", width=25, command=transpose_clicked)
 transposeButton.place(x=10, y=300)
+
 semitoneScale = tk.Scale(root, from_=-6, to=6, orient='horizontal', length=150)
 semitoneScale.place(x=10, y=250)
 

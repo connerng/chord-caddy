@@ -47,7 +47,7 @@ class ChordProgression:
 
 def TransposeCP(cp: ChordProgression, semitones: int):
     cpStr = ""
-    newKey = Transpose(cp.key, semitones, cp.sf)
+    newKey = TransposeKey(cp.key, semitones)
     if newKey in flatKeys:
         newSF = "f"
     else:
