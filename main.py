@@ -33,12 +33,29 @@ def transpose_clicked():
     chordsDisplay['text'] = cp.ToString()
     keyDisplay['text'] = "Key: " + cp.key
 
+def create_new_clicked():
+    print("Create New Progression")
+
+def play_clicked():
+    print("Play")
+
+def lib_clicked():
+    print("Library")
+
 root = tk.Tk()
 root.title("Chord Transposer")
 root.geometry('750x450')
 
 style = ttk.Style()
 style.theme_use('vista')
+
+mainmenu = tk.Menu(root)
+mainmenu.add_command(label = "Create New", command = create_new_clicked)
+mainmenu.add_command(label = "Play", command=play_clicked)
+mainmenu.add_command(label = "Library", command=lib_clicked)
+root.config(menu = mainmenu)
+
+
 
 new_cp_title = ttk.Label(root, text="Create New Chord Progression", font=('Helvetica', 14))
 new_cp_title.place(x = 10, y = 0)
