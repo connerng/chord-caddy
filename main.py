@@ -11,7 +11,6 @@ chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 
 
 keys = ['.', 'Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
 
-global time_signature
 
 def show(widget):
     widget.pack()
@@ -19,31 +18,11 @@ def show(widget):
 def hide(widget):
     widget.pack_forget()
 
-def save_clicked():
-    cpStr = "|"
-    for i in range(0, len(chordProgCB)):
-        cpStr += chordProgCB[i].get()
-        if (i+1)%4 == 0:
-            cpStr += "|"
-    cp = ChordProgression(cpStr, time_signature, keysCB.get())
-    chordsDisplay['text'] = cp.ToString()
-    keyDisplay['text'] = "Key: " + cp.key
-
-def transpose_clicked():
-    cpStr = "|"
-    for i in range(0, len(chordProgCB)):
-        cpStr += chordProgCB[i].get()
-        if (i+1)%4 == 0:
-            cpStr += "|"
-    cp = ChordProgression(cpStr, time_signature, keysCB.get())
-    cp = TransposeCP(cp, semitoneScale.get())
-    cp_new = cp.ToString()
-    print(cp_new)
-    chordsDisplay['text'] = cp.ToString()
-    keyDisplay['text'] = "Key: " + cp.key
 
 def ts_44_clicked():
     create_new_clicked()
+    global timeSignature
+    timeSignature = "4/4"
     global chordProgCB
     chordProgCB = []
     for r in range(1, 5):
@@ -56,6 +35,8 @@ def ts_44_clicked():
 
 def ts_68_clicked():
     create_new_clicked()
+    global timeSignature
+    timeSignature = "6/8"
     global chordProgCB
     chordProgCB = []
     for r in range(1, 5):
@@ -66,6 +47,41 @@ def ts_68_clicked():
             chordProgCB.append(cur)
 
 def create_new_clicked():
+
+    def save_clicked():
+        cpStr = "|"
+        for i in range(0, len(chordProgCB)):
+            cpStr += chordProgCB[i].get()
+            if timeSignature == "4/4":
+                if (i+1)%4 == 0:
+                    cpStr += "|"
+            else:
+                if (i+1)%6 == 0:
+                    cpStr += "|"
+        cp = ChordProgression(cpStr, timeSignature, keysCB.get())
+
+        confirm = tk.Tk()
+        confirm.title("Confirm Save")
+        confirm.geometry('250x150')
+
+        confirm_name_text = "Saved As \"" + cp_name_entry.get() + "\""        
+        confirm_name = ttk.Label(confirm, text=confirm_name_text)
+        confirm_name.pack()
+
+        confirm_key_text = "Key: " + keysCB.get()
+        confirm_key = ttk.Label(confirm, text=confirm_key_text)
+        confirm_key.pack()
+
+        confirm_cp = ttk.Label(confirm, text=cp.ToString())
+        confirm_cp.pack()
+
+        green_check = tk.PhotoImage(file="greencheck.png")
+        lbl_greencheck = ttk.Label(confirm, image=green_check)
+        lbl_greencheck.pack()
+
+        confirm.mainloop()
+
+
     clearWindow()
     keysList = keys
     root['bg'] = 'light yellow'
