@@ -10,8 +10,10 @@ class ChordProgression:
     key = ""
     scale = []
     sf = ""
+    bpm = 0
+    name = ""
     
-    def __init__(self, cpStr: str, timeSig: str, key: str):
+    def __init__(self, name: str, cpStr: str, timeSig: str, key: str, bpm: int):
         cur = ""
         self.chordProg = []
         for c in cpStr:
@@ -26,6 +28,8 @@ class ChordProgression:
             self.chordProg.append(cur)
         self.key = key
         self.timeSig = timeSig
+        self.bpm = bpm
+        self.name = name
         if key in flatKeys:
             sf = "f"
         else:

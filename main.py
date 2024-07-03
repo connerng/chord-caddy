@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo
 from chordprog import *
 from view import *
+from database import AddNew
 
 chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
           'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
@@ -58,28 +59,34 @@ def create_new_clicked():
             else:
                 if (i+1)%6 == 0:
                     cpStr += "|"
-        cp = ChordProgression(cpStr, timeSignature, keysCB.get())
+        cp = ChordProgression(cp_name_entry.get(), cpStr, timeSignature, keysCB.get(), bpm_scale.get())
+        AddNew(cp)
 
-        confirm = tk.Tk()
-        confirm.title("Confirm Save")
-        confirm.geometry('250x150')
+        # hide(saveButton)
+        # confirm_text = "Saved As \"" + cp_name_entry.get() + "\""
+        # lbl_confirm = ttk.Label(root, text=confirm_text, font=('Helvetica', 12))
+        # lbl_confirm.place(x=200, y=247)
 
-        confirm_name_text = "Saved As \"" + cp_name_entry.get() + "\""        
-        confirm_name = ttk.Label(confirm, text=confirm_name_text)
-        confirm_name.pack()
+        # confirm = tk.Tk()
+        # confirm.title("Confirm Save")
+        # confirm.geometry('250x150')
 
-        confirm_key_text = "Key: " + keysCB.get()
-        confirm_key = ttk.Label(confirm, text=confirm_key_text)
-        confirm_key.pack()
+        # confirm_name_text = "Saved As \"" + cp_name_entry.get() + "\""        
+        # confirm_name = ttk.Label(confirm, text=confirm_name_text)
+        # confirm_name.pack()
 
-        confirm_cp = ttk.Label(confirm, text=cp.ToString())
-        confirm_cp.pack()
+        # confirm_key_text = "Key: " + keysCB.get()
+        # confirm_key = ttk.Label(confirm, text=confirm_key_text)
+        # confirm_key.pack()
 
-        green_check = tk.PhotoImage(file="greencheck.png")
-        lbl_greencheck = ttk.Label(confirm, image=green_check)
-        lbl_greencheck.pack()
+        # confirm_cp = ttk.Label(confirm, text=cp.ToString())
+        # confirm_cp.pack()
 
-        confirm.mainloop()
+        # green_check = tk.PhotoImage(file="greencheck.png")
+        # lbl_greencheck = ttk.Label(confirm, image=green_check)
+        # lbl_greencheck.pack()
+
+        # confirm.mainloop()
 
 
     clearWindow()
@@ -110,8 +117,13 @@ def create_new_clicked():
     cp_name_entry = ttk.Entry(root)
     cp_name_entry.place(x=200, y=215)
 
+    bpm_scale = tk.Scale(root, from_=30, to=250, orient='horizontal', length=300, label="BPM")
+    bpm_scale.set(100)
+    bpm_scale.place(x=100, y=250)
+
+
     saveButton = ttk.Button(root, text="Save", width=10, command=save_clicked)
-    saveButton.place(x=215, y=245)
+    saveButton.place(x=215, y=320)
 
 
 def play_clicked():
@@ -122,7 +134,7 @@ def lib_clicked():
 
 root = tk.Tk()
 root.title("Chord Caddy")
-root.geometry('500x300')
+root.geometry('500x400')
 
 style = ttk.Style()
 style.theme_use('vista')
@@ -141,5 +153,6 @@ def clearWindow():
     mainmenu.add_command(label = "Play", command=play_clicked)
     mainmenu.add_command(label = "Library", command=lib_clicked)
     root.config(menu = mainmenu)
+
 
 root.mainloop()
