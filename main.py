@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo
 from chordprog import *
 from view import *
-from database import AddNew
+from database import *
 
 chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
           'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
@@ -91,7 +91,6 @@ def create_new_clicked():
 
     clearWindow()
     keysList = keys
-    root['bg'] = 'light yellow'
     new_cp_title = ttk.Label(root, text="Create New Chord Progression", font=('Helvetica', 14), background='light yellow')
     new_cp_title.pack()
 
@@ -130,11 +129,60 @@ def play_clicked():
     print("Play")
 
 def lib_clicked():
-    print("Library")
+
+    def doubleclick(event):
+        cs = lib_list.curselection()
+        lbl_cur_sel.config(text=lib_list.get(cs))
+        
+        curIndex = df[df['Name'] == lib_list.get(cs)].index.values
+        txt_chords = df['Chords'][curIndex[0]]
+        txt_key = "Key: " + df['Key'][curIndex[0]]
+        txt_bpm = "BPM: " + str(df['BPM'][curIndex[0]])
+        txt_ts = "Time Signature: " + df['Time Signature'][curIndex[0]]
+
+        lbl_cur_chords.config(text=txt_chords)
+        lbl_cur_key.config(text=txt_key)
+        lbl_cur_bpm.config(text=txt_bpm)
+        lbl_cur_ts.config(text=txt_ts)
+
+        
+
+    clearWindow()
+    lib_title = ttk.Label(root, text="Library", font=('Helvetica', 14), background='light yellow')
+    lib_title.pack()
+
+    cp_names = []
+    for ind in df.index:
+        cp_names.append(df['Name'][ind])
+    cp_names.sort()
+
+    scroll = ttk.Scrollbar(root)
+    lib_list_var = tk.Variable(value=cp_names)
+    lib_list = tk.Listbox(root, yscrollcommand=scroll.set, listvariable=lib_list_var)
+    lib_list.bind('<Double-1>', doubleclick)
+    lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
+    scroll.pack(side='left')
+
+    lbl_cur_sel = ttk.Label(root, text="Name", font=('Helvetica', 12, 'bold'), background='light yellow')
+    lbl_cur_sel.pack(pady=(20, 0))
+
+    lbl_cur_key = ttk.Label(root, text="Key:", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_key.pack(pady=(10,0))
+    
+    lbl_cur_bpm = ttk.Label(root, text="BPM:", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_bpm.pack(pady=(10,0))
+
+    lbl_cur_ts = ttk.Label(root, text="Time Signature:", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_ts.pack(pady=(10,0))
+
+    lbl_cur_chords = ttk.Label(root, text="| | | |", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_chords.pack(pady=(10,0))
+
 
 root = tk.Tk()
 root.title("Chord Caddy")
 root.geometry('500x400')
+root['bg'] = 'light yellow'
 
 style = ttk.Style()
 style.theme_use('vista')

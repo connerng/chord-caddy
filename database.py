@@ -12,7 +12,6 @@ filename = "chord_data.csv"
 # fields = ['Name', 'Key', 'BPM', 'Time Signature', 'Chords']
 
 df = pd.read_csv('chord_data.csv')
-df = df.sort_values(by='Name', ascending=1)
 
 def AddNew(cp: ChordProgression):
     newRow = [cp.name, cp.key, cp.bpm, cp.timeSig, cp.ToString()]
@@ -20,12 +19,10 @@ def AddNew(cp: ChordProgression):
     with open(filename, 'a') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(newRow)
-    df.sort_values(by='Name', ascending=1)
     print(df)
 
 def Delete(name: str):
     df.drop(labels=name, axis='index', inplace=True)
-    df.to_csv('chord_data.csv')
     print(df)
 
 print(df)
