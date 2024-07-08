@@ -120,7 +120,7 @@ def lib_clicked():
         lbl_cur_bpm.config(text=txt_bpm)
         lbl_cur_ts.config(text=txt_ts)
 
-        frame.pack(pady=5)
+        frame_de.pack(pady=5)
         del_button.pack(side='left')
         edit_button.pack(side='right')
     
@@ -134,9 +134,27 @@ def lib_clicked():
     def edit_clicked():
         cs = lib_list.curselection()
 
-        name_entry = ttk.Entry(root)
+        frame_name = ttk.Frame(root, width=100, height=20)
+        frame_name.pack(pady=5)
+        name_entry = ttk.Entry(frame_name)
         name_entry.insert(0, lib_list.get(cs))
-        name_entry.pack(pady=5)
+        name_entry.pack(side='right')
+        lbl_name_entry = ttk.Label(frame_name, text="Name: ", font=('Helvetica', 10), background='light yellow')
+        lbl_name_entry.pack(side='left')
+
+        frame_key_ts = ttk.Frame(root, width=100, height=20)
+        frame_key_ts.pack(pady=5)
+        lbl_key_entry = ttk.Label(frame_key_ts, text="Key: ", font=('Helvetica', 10), background='light yellow')
+        lbl_key_entry.pack(side='left')
+        key_entry = ttk.Combobox(frame_key_ts, values=keys, state='readonly', width=5)
+        key_entry.current(0)
+        key_entry.pack(side='left')
+        lbl_ts_entry = ttk.Label(frame_key_ts, text="Time Signature: ", font=('Helvetica', 10), background='light yellow')
+        lbl_ts_entry.pack(side='left', padx=(10, 0))
+        
+
+
+        
         
 
     clearWindow()
@@ -158,10 +176,10 @@ def lib_clicked():
     lbl_cur_sel = ttk.Label(root, text="Name", font=('Helvetica', 12, 'bold'), background='light yellow')
     lbl_cur_sel.pack(pady=(20, 5))
 
-    lbl_cur_key = ttk.Label(root, text="Key:", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_key = ttk.Label(root, text="Key: ", font=('Helvetica', 12), background='light yellow')
     lbl_cur_key.pack(pady=5)
-    
-    lbl_cur_bpm = ttk.Label(root, text="BPM:", font=('Helvetica', 12), background='light yellow')
+
+    lbl_cur_bpm = ttk.Label(root, text="BPM: ", font=('Helvetica', 12), background='light yellow')
     lbl_cur_bpm.pack(pady=5)
 
     lbl_cur_ts = ttk.Label(root, text="Time Signature:", font=('Helvetica', 12), background='light yellow')
@@ -170,9 +188,9 @@ def lib_clicked():
     lbl_cur_chords = ttk.Label(root, text="| | | |", font=('Helvetica', 12), background='light yellow')
     lbl_cur_chords.pack(pady=5)
 
-    frame = ttk.Frame(root, width=100, height=20)    
-    del_button = ttk.Button(frame, text="Delete", width=10, command=delete_clicked)
-    edit_button = ttk.Button(frame, text="Edit", width=10, command=edit_clicked)
+    frame_de = ttk.Frame(root, width=100, height=20)    
+    del_button = ttk.Button(frame_de, text="Delete", width=10, command=delete_clicked)
+    edit_button = ttk.Button(frame_de, text="Edit", width=10, command=edit_clicked)
 
 
 
