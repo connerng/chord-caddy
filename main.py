@@ -61,32 +61,7 @@ def create_new_clicked():
                     cpStr += "|"
         cp = ChordProgression(cp_name_entry.get(), cpStr, timeSignature, keysCB.get(), bpm_scale.get())
         AddNew(cp)
-
-        # hide(saveButton)
-        # confirm_text = "Saved As \"" + cp_name_entry.get() + "\""
-        # lbl_confirm = ttk.Label(root, text=confirm_text, font=('Helvetica', 12))
-        # lbl_confirm.place(x=200, y=247)
-
-        # confirm = tk.Tk()
-        # confirm.title("Confirm Save")
-        # confirm.geometry('250x150')
-
-        # confirm_name_text = "Saved As \"" + cp_name_entry.get() + "\""        
-        # confirm_name = ttk.Label(confirm, text=confirm_name_text)
-        # confirm_name.pack()
-
-        # confirm_key_text = "Key: " + keysCB.get()
-        # confirm_key = ttk.Label(confirm, text=confirm_key_text)
-        # confirm_key.pack()
-
-        # confirm_cp = ttk.Label(confirm, text=cp.ToString())
-        # confirm_cp.pack()
-
-        # green_check = tk.PhotoImage(file="greencheck.png")
-        # lbl_greencheck = ttk.Label(confirm, image=green_check)
-        # lbl_greencheck.pack()
-
-        # confirm.mainloop()
+        create_new_clicked()
 
 
     clearWindow()
@@ -130,7 +105,7 @@ def play_clicked():
 
 def lib_clicked():
 
-    def doubleclick(event):
+    def doubleclick_lb(event):
         cs = lib_list.curselection()
         lbl_cur_sel.config(text=lib_list.get(cs))
         
@@ -145,6 +120,23 @@ def lib_clicked():
         lbl_cur_bpm.config(text=txt_bpm)
         lbl_cur_ts.config(text=txt_ts)
 
+        frame.pack(pady=5)
+        del_button.pack(side='left')
+        edit_button.pack(side='right')
+    
+    def delete_clicked():
+        cs = lib_list.curselection()
+        curIndex = df[df['Name'] == lib_list.get(cs)].index.values
+        Delete(curIndex[0])
+        lib_clicked()
+
+
+    def edit_clicked():
+        cs = lib_list.curselection()
+
+        name_entry = ttk.Entry(root)
+        name_entry.insert(0, lib_list.get(cs))
+        name_entry.pack(pady=5)
         
 
     clearWindow()
@@ -159,24 +151,29 @@ def lib_clicked():
     scroll = ttk.Scrollbar(root)
     lib_list_var = tk.Variable(value=cp_names)
     lib_list = tk.Listbox(root, yscrollcommand=scroll.set, listvariable=lib_list_var)
-    lib_list.bind('<Double-1>', doubleclick)
+    lib_list.bind('<Double-1>', doubleclick_lb)
     lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
     scroll.pack(side='left')
 
     lbl_cur_sel = ttk.Label(root, text="Name", font=('Helvetica', 12, 'bold'), background='light yellow')
-    lbl_cur_sel.pack(pady=(20, 0))
+    lbl_cur_sel.pack(pady=(20, 5))
 
     lbl_cur_key = ttk.Label(root, text="Key:", font=('Helvetica', 12), background='light yellow')
-    lbl_cur_key.pack(pady=(10,0))
+    lbl_cur_key.pack(pady=5)
     
     lbl_cur_bpm = ttk.Label(root, text="BPM:", font=('Helvetica', 12), background='light yellow')
-    lbl_cur_bpm.pack(pady=(10,0))
+    lbl_cur_bpm.pack(pady=5)
 
     lbl_cur_ts = ttk.Label(root, text="Time Signature:", font=('Helvetica', 12), background='light yellow')
-    lbl_cur_ts.pack(pady=(10,0))
+    lbl_cur_ts.pack(pady=5)
 
     lbl_cur_chords = ttk.Label(root, text="| | | |", font=('Helvetica', 12), background='light yellow')
-    lbl_cur_chords.pack(pady=(10,0))
+    lbl_cur_chords.pack(pady=5)
+
+    frame = ttk.Frame(root, width=100, height=20)    
+    del_button = ttk.Button(frame, text="Delete", width=10, command=delete_clicked)
+    edit_button = ttk.Button(frame, text="Edit", width=10, command=edit_clicked)
+
 
 
 root = tk.Tk()

@@ -1,11 +1,5 @@
 import pandas as pd
-import xlrd
-import xlwt
-import openpyxl
-from xlwt import Workbook
-from openpyxl import load_workbook
 from chordprog import *
-import csv
 
 filename = "chord_data.csv"
 
@@ -16,14 +10,13 @@ df = pd.read_csv('chord_data.csv')
 def AddNew(cp: ChordProgression):
     newRow = [cp.name, cp.key, cp.bpm, cp.timeSig, cp.ToString()]
     df.loc[len(df.index)] = [cp.name, cp.key, cp.bpm, cp.timeSig, cp.ToString()]
-    with open(filename, 'a') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerow(newRow)
+    df.to_csv('chord_data.csv', index=False)
     print(df)
 
-def Delete(name: str):
-    df.drop(labels=name, axis='index', inplace=True)
+def Delete(i: int):
+    df.drop(index=i, inplace=True)
     print(df)
+    df.to_csv('chord_data.csv', index=False)
 
 print(df)
 # Delete("Test(G)")
