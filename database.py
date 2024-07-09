@@ -22,6 +22,9 @@ def Delete(i: int):
     print(df)
     df.to_csv('chord_data.csv', index=False)
 
+def Save():
+    df.to_csv('chord_data.csv', index=False)
+
 print(df)
 # Delete("Test(G)")
 

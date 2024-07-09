@@ -19,35 +19,34 @@ def show(widget):
 def hide(widget):
     widget.pack_forget()
 
+def create_new_clicked():
 
-def ts_44_clicked():
-    create_new_clicked()
-    global timeSignature
-    timeSignature = "4/4"
-    global chordProgCB
-    chordProgCB = []
-    for r in range(1, 5):
-        for col in range(1, 5):
-            cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
-            cur.current(0)
-            cur.place(x = (col * 50) + 100, y = (r * 25) + 60)
-            chordProgCB.append(cur)
+    def ts_44_clicked():
+        create_new_clicked()
+        global timeSignature
+        timeSignature = "4/4"
+        global chordProgCB
+        chordProgCB = []
+        for r in range(1, 5):
+            for col in range(1, 5):
+                cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
+                cur.current(0)
+                cur.place(x = (col * 50) + 100, y = (r * 25) + 60)
+                chordProgCB.append(cur)
     
 
-def ts_68_clicked():
-    create_new_clicked()
-    global timeSignature
-    timeSignature = "6/8"
-    global chordProgCB
-    chordProgCB = []
-    for r in range(1, 5):
-        for col in range(1, 7):
-            cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
-            cur.current(0)
-            cur.place(x = (col * 50) + 50, y = (r * 25) + 60)
-            chordProgCB.append(cur)
-
-def create_new_clicked():
+    def ts_68_clicked():
+        create_new_clicked()
+        global timeSignature
+        timeSignature = "6/8"
+        global chordProgCB
+        chordProgCB = []
+        for r in range(1, 5):
+            for col in range(1, 7):
+                cur = ttk.Combobox(root, values=chords, state='readonly', width=5)
+                cur.current(0)
+                cur.place(x = (col * 50) + 50, y = (r * 25) + 60)
+                chordProgCB.append(cur)
 
     def save_clicked():
         cpStr = "|"
@@ -143,18 +142,53 @@ def lib_clicked():
 
 
     def edit_clicked():
+        def ts_44():
+            global chordProgCB
+            chordProgCB = []
+            i = 0
+            for r in range(1, 5):
+                curFrame = tk.Frame(root, bg='light yellow')
+                curFrame.pack(pady=3)
+                for col in range(1, 5):
+                    curCB = ttk.Combobox(curFrame, values=chords, state='readonly', width=5)
+                    while cur.chordProg[i] == '|':
+                        i += 1
+                    curCB.current(chords.index(cur.chordProg[i]))
+                    i += 1
+                    curCB.pack(side='left', padx=1)
+                    chordProgCB.append(curCB)
+    
+
+        def ts_68():
+            global chordProgCB
+            chordProgCB = []
+            i = 0
+            for r in range(1, 5):
+                curFrame = tk.Frame(root, bg='light yellow')
+                curFrame.pack(pady=3)
+                for col in range(1, 7):
+                    curCB = ttk.Combobox(curFrame, values=chords, state='readonly', width=5)
+                    while cur.chordProg[i] == '|':
+                        i += 1
+                    curCB.current(chords.index(cur.chordProg[i]))
+                    i += 1
+                    curCB.pack(side='left', padx=1)
+                    chordProgCB.append(curCB)
+
         def save_edit_clicked():
             cpStr = "|"
             for i in range(0, len(chordProgCB)):
                 cpStr += chordProgCB[i].get()
-                if timeSignature == "4/4":
+                if curTime == "4/4":
                     if (i+1)%4 == 0:
                         cpStr += "|"
                 else:
                     if (i+1)%6 == 0:
                         cpStr += "|"
-            cp = ChordProgression(cp_name_entry.get(), cpStr, timeSignature, keysCB.get(), bpm_scale.get())
-            AddNew(cp)
+            cp = ChordProgression(cp_name_entry.get(), cpStr, curTime, keysCB.get(), bpm_scale.get())
+            df.loc[curIndex] = [cp_name_entry.get(), keysCB.get(), bpm_scale.get(), curTime, cp.ToString()]
+            print(df)
+            Save()
             lib_clicked()
         
         def bpm_down_clicked():
@@ -170,27 +204,20 @@ def lib_clicked():
         curChords = df['Chords'][curIndex]
         curTime = df['Time Signature'][curIndex]
         curKey = df['Key'][curIndex]
-        curBPM = df['BPM'][curIndex]
+        curBPM = int(df['BPM'][curIndex])
         cur = ChordProgression(curName, curChords, curTime, curKey, curBPM)
         
         clearWindow()
-        txt_title = "Edit \"" + curName + "\""
-        title = ttk.Label(root, text=txt_title, font=('Helvetica', 14), background='light yellow')
-        title.pack()
+        edit_title = ttk.Label(root, text="Edit \"" + curName + "\"", font=('Helvetica', 14), background='light yellow')
+        edit_title.pack()
 
-        lbl_timeSig = ttk.Label(root, text="Time Signature:", font=('Helvetica', 10), background='light yellow')
-        lbl_timeSig.pack()
-
-        ts_44_button = ttk.Button(root, text="4/4", width=10, command=ts_44_clicked)
-        ts_44_button.place(x=180, y=50)
-
-        ts_68_button = ttk.Button(root, text="6/8", width=10, command=ts_68_clicked)
-        ts_68_button.place(x=250, y=50)
+        lbl_timeSig = ttk.Label(root, text="Time Signature: " + curTime, font=('Helvetica', 10), background='light yellow')
+        lbl_timeSig.pack(pady=10)
 
         if curTime == "4/4":
-            ts_44_clicked()
+            ts_44()
         else:
-            ts_68_clicked()
+            ts_68()
 
         for i in range(0, len(chordProgCB)):
             cb = ttk.Combobox(chordProgCB[i])
@@ -200,33 +227,39 @@ def lib_clicked():
             else:
                 cb.current(chords.index(cur.chordProg[index]))
 
-        lbl_key = ttk.Label(root, text="Key: ", font=('Helvetica', 10), background='light yellow')
-        lbl_key.place(x=150, y=190)
-
-        keysCB = ttk.Combobox(root, values=keys, state='readonly', width=5)
+        keyFrame = tk.Frame(root, bg='light yellow')
+        keyFrame.pack(pady=5)
+        lbl_key = ttk.Label(keyFrame, text="Key: ", font=('Helvetica', 10), background='light yellow')
+        lbl_key.pack(side='left', padx=2)
+        keysCB = ttk.Combobox(keyFrame, values=keys, state='readonly', width=5)
         keysCB.current(keys.index(curKey))
-        keysCB.place(x=200, y=190)
+        keysCB.pack(side='left', padx=2)
 
-        lbl_cpname = ttk.Label(root, text="Name: ", font=('Helvetica', 10), background='light yellow')
-        lbl_cpname.place(x=150, y=215)
+        nameFrame = tk.Frame(root, bg='light yellow')
+        nameFrame.pack(pady=5)
+        lbl_cpname = ttk.Label(nameFrame, text="Name: ", font=('Helvetica', 10), background='light yellow')
+        lbl_cpname.pack(side='left', padx=2)
+        cp_name_entry = ttk.Entry(nameFrame)
+        cp_name_entry.insert(0, curName)
+        cp_name_entry.pack(side='left', padx=2)
 
-        cp_name_entry = ttk.Entry(root)
-        cp_name_entry.place(x=200, y=215)
-
-        bpm_down = ttk.Button(root, text="<<", width=3, command=bpm_down_clicked)
-        bpm_down.place(x=70,y=280)
-
-        bpm_up = ttk.Button(root, text=">>", width=3, command=bpm_up_clicked)
-        bpm_up.place(x=408,y=280)
-    
-        bpm_scale = tk.Scale(root, from_=30, to=250, orient='horizontal', length=300, label="BPM")
-        bpm_scale.set(100)
-        bpm_scale.place(x=100, y=250)
-
-
-        saveButton = ttk.Button(root, text="Save Changes", width=10, command=save_edit_clicked)
-        saveButton.place(x=215, y=320)
         
+        bpmFrame = tk.Frame(root, bg='light yellow')
+        bpmFrame.pack(pady=5)
+        bpm_down = ttk.Button(bpmFrame, text="<<", width=3, command=bpm_down_clicked)
+        bpm_down.pack(side='left', padx=2)
+        bpm_scale = tk.Scale(bpmFrame, from_=30, to=250, orient='horizontal', length=300, label="BPM")
+        bpm_scale.set(curBPM)
+        bpm_scale.pack(side='left', padx=2)
+        bpm_up = ttk.Button(bpmFrame, text=">>", width=3, command=bpm_up_clicked)
+        bpm_up.pack(side='left', padx=2)
+
+        buttonFrame = tk.Frame(root, bg='light yellow')
+        buttonFrame.pack(pady=5)
+        saveButton = ttk.Button(buttonFrame, text="Save Changes", width=15, command=save_edit_clicked)
+        saveButton.pack(side='left', padx=2)
+        cancelButton = ttk.Button(buttonFrame, text="Cancel", width=15, command=lib_clicked)
+        cancelButton.pack(side='left', padx=2)
         
     # Library Screen
     clearWindow()
