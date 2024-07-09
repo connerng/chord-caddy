@@ -23,7 +23,8 @@ class ChordProgression:
                 if len(cur) > 0:
                     self.chordProg.append(cur)
                 cur = ""
-                self.chordProg.append(c)
+                if c != " ":
+                    self.chordProg.append(c)
         if len(cur) > 0:
             self.chordProg.append(cur)
         self.key = key
@@ -63,8 +64,5 @@ def TransposeCP(cp: ChordProgression, semitones: int):
             cpStr += item
     newProg = ChordProgression(cpStr, cp.timeSig, newKey)
     return newProg
-
-        
-        
 
 
