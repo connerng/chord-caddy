@@ -222,6 +222,32 @@ def lib_clicked():
         edit_title = ttk.Label(root, text="Edit \"" + curName + "\"", font=('Helvetica', 14), background='light yellow')
         edit_title.pack()
 
+        nameFrame = tk.Frame(root, bg='light yellow')
+        nameFrame.pack(pady=5)
+        lbl_cpname = ttk.Label(nameFrame, text="Name: ", font=('Helvetica', 10), background='light yellow')
+        lbl_cpname.pack(side='left', padx=2)
+        cp_name_entry = ttk.Entry(nameFrame)
+        cp_name_entry.insert(0, curName)
+        cp_name_entry.pack(side='left', padx=2)
+
+        keyFrame = tk.Frame(root, bg='light yellow')
+        keyFrame.pack(pady=5)
+        lbl_key = ttk.Label(keyFrame, text="Key: ", font=('Helvetica', 10), background='light yellow')
+        lbl_key.pack(side='left', padx=2)
+        keysCB = ttk.Combobox(keyFrame, values=keys, state='readonly', width=5)
+        keysCB.current(keys.index(curKey))
+        keysCB.pack(side='left', padx=2)
+
+        bpmFrame = tk.Frame(root, bg='light yellow')
+        bpmFrame.pack(pady=5)
+        bpm_down = ttk.Button(bpmFrame, text="<<", width=3, command=bpm_down_clicked)
+        bpm_down.pack(side='left', padx=2)
+        bpm_scale = tk.Scale(bpmFrame, from_=30, to=250, orient='horizontal', length=300, label="BPM")
+        bpm_scale.set(curBPM)
+        bpm_scale.pack(side='left', padx=2)
+        bpm_up = ttk.Button(bpmFrame, text=">>", width=3, command=bpm_up_clicked)
+        bpm_up.pack(side='left', padx=2)
+
         lbl_timeSig = ttk.Label(root, text="Time Signature: " + curTime, font=('Helvetica', 10), background='light yellow')
         lbl_timeSig.pack(pady=10)
 
@@ -237,33 +263,6 @@ def lib_clicked():
                 index += 1
             else:
                 cb.current(chords.index(cur.chordProg[index]))
-
-        keyFrame = tk.Frame(root, bg='light yellow')
-        keyFrame.pack(pady=5)
-        lbl_key = ttk.Label(keyFrame, text="Key: ", font=('Helvetica', 10), background='light yellow')
-        lbl_key.pack(side='left', padx=2)
-        keysCB = ttk.Combobox(keyFrame, values=keys, state='readonly', width=5)
-        keysCB.current(keys.index(curKey))
-        keysCB.pack(side='left', padx=2)
-
-        nameFrame = tk.Frame(root, bg='light yellow')
-        nameFrame.pack(pady=5)
-        lbl_cpname = ttk.Label(nameFrame, text="Name: ", font=('Helvetica', 10), background='light yellow')
-        lbl_cpname.pack(side='left', padx=2)
-        cp_name_entry = ttk.Entry(nameFrame)
-        cp_name_entry.insert(0, curName)
-        cp_name_entry.pack(side='left', padx=2)
-
-        
-        bpmFrame = tk.Frame(root, bg='light yellow')
-        bpmFrame.pack(pady=5)
-        bpm_down = ttk.Button(bpmFrame, text="<<", width=3, command=bpm_down_clicked)
-        bpm_down.pack(side='left', padx=2)
-        bpm_scale = tk.Scale(bpmFrame, from_=30, to=250, orient='horizontal', length=300, label="BPM")
-        bpm_scale.set(curBPM)
-        bpm_scale.pack(side='left', padx=2)
-        bpm_up = ttk.Button(bpmFrame, text=">>", width=3, command=bpm_up_clicked)
-        bpm_up.pack(side='left', padx=2)
 
         buttonFrame = tk.Frame(root, bg='light yellow')
         buttonFrame.pack(pady=5)
