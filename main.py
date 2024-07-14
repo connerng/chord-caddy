@@ -135,14 +135,18 @@ def play_clicked():
 def lib_clicked():
 
     def doubleclick_lb(event):
-        cs = lib_list.curselection()
-        lbl_cur_sel.config(text=lib_list.get(cs))
+        curSelection = lib_list.curselection()
+        lbl_cur_sel.config(text=lib_list.get(curSelection))
         
-        curIndex = df[df['Name'] == lib_list.get(cs)].index.values
-        txt_chords = df['Chords'][curIndex[0]]
-        txt_key = "Key: " + df['Key'][curIndex[0]]
-        txt_bpm = "BPM: " + str(df['BPM'][curIndex[0]])
-        txt_ts = "Time Signature: " + df['Time Signature'][curIndex[0]]
+        tmp = df[df['Name'] == lib_list.get(curSelection)].index.values
+        global curIndex
+        curIndex = tmp[0]
+        global origKey
+        origKey = df['Key'][curIndex]
+        txt_chords = df['Chords'][curIndex]
+        txt_key = "Key: " + df['Key'][curIndex]
+        txt_bpm = "BPM: " + str(df['BPM'][curIndex])
+        txt_ts = "Time Signature: " + df['Time Signature'][curIndex]
 
         lbl_cur_chords.config(text=txt_chords)
         lbl_cur_key.config(text=txt_key)
@@ -210,20 +214,51 @@ def lib_clicked():
             Save()
             lib_clicked()
         
+        def cancel_clicked():
+            keysCB.set(origKey)
+            newKey = keysCB.get()
+            if curKey in flatKeys:
+                indexOld = notes_f.index(curKey)
+            else:
+                indexOld = notes_s.index(curKey)
+            if newKey in flatKeys:
+                indexNew = notes_f.index(newKey)
+            else:
+                indexNew = notes_s.index(newKey)
+            semitones = indexNew - indexOld
+            transposed = TransposeCP(cur, semitones)
+            df.loc[curIndex] = [transposed.name, transposed.key, transposed.bpm, transposed.timeSig, transposed.ToString()]
+            print(df)
+            lib_clicked()
+        
+        def key_change(event):
+            newKey = keysCB.get()
+            if curKey in flatKeys:
+                indexOld = notes_f.index(curKey)
+            else:
+                indexOld = notes_s.index(curKey)
+            if newKey in flatKeys:
+                indexNew = notes_f.index(newKey)
+            else:
+                indexNew = notes_s.index(newKey)
+            semitones = indexNew - indexOld
+            transposed = TransposeCP(cur, semitones)
+            df.loc[curIndex] = [transposed.name, transposed.key, transposed.bpm, transposed.timeSig, transposed.ToString()]
+            print(df)
+            edit_clicked()
+        
         def bpm_down_clicked():
             bpm_scale.set(bpm_scale.get() - 1)
 
         def bpm_up_clicked():
             bpm_scale.set(bpm_scale.get() + 1)
 
-        cs = lib_list.curselection()
-        tmp = df[df['Name'] == lib_list.get(cs)].index.values
-        curIndex = tmp[0]
-        curName = lib_list.get(cs)
-        curChords = df['Chords'][curIndex]
-        curTime = df['Time Signature'][curIndex]
-        curKey = df['Key'][curIndex]
-        curBPM = int(df['BPM'][curIndex])
+        curInd = curIndex
+        curName = df['Name'][curInd]
+        curChords = df['Chords'][curInd]
+        curTime = df['Time Signature'][curInd]
+        curKey = df['Key'][curInd]
+        curBPM = int(df['BPM'][curInd])
         cur = ChordProgression(curName, curChords, curTime, curKey, curBPM)
         
         clearWindow()
@@ -244,7 +279,9 @@ def lib_clicked():
         lbl_key.pack(side='left', padx=2)
         keysCB = ttk.Combobox(keyFrame, values=keys, state='readonly', width=5)
         keysCB.current(keys.index(curKey))
+        keysCB.bind("<<ComboboxSelected>>", key_change)
         keysCB.pack(side='left', padx=2)
+
 
         bpmFrame = tk.Frame(root, bg='light yellow')
         bpmFrame.pack(pady=5)
@@ -276,7 +313,7 @@ def lib_clicked():
         buttonFrame.pack(pady=5)
         saveButton = ttk.Button(buttonFrame, text="Save Changes", width=15, command=save_edit_clicked)
         saveButton.pack(side='left', padx=2)
-        cancelButton = ttk.Button(buttonFrame, text="Cancel", width=15, command=lib_clicked)
+        cancelButton = ttk.Button(buttonFrame, text="Cancel", width=15, command=cancel_clicked)
         cancelButton.pack(side='left', padx=2)
         
     # Library Screen

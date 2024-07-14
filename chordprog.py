@@ -53,16 +53,24 @@ class ChordProgression:
 def TransposeCP(cp: ChordProgression, semitones: int):
     cpStr = ""
     newKey = TransposeKey(cp.key, semitones)
+    if cp.key in flatKeys:
+        oldSF = "f"
+    else:
+        oldSF = "s"
     if newKey in flatKeys:
         newSF = "f"
     else:
         newSF = "s"
     for item in cp.chordProg:
         if item[0].isalpha():
-            cpStr += Transpose(item, semitones, newSF)
+            cpStr += Transpose(item, semitones, newSF, oldSF)
         else:
             cpStr += item
-    newProg = ChordProgression(cpStr, cp.timeSig, newKey)
+    newProg = ChordProgression(cp.name, cpStr, cp.timeSig, newKey, cp.bpm)
     return newProg
 
-
+chords = "|B...|F#...|E...|G#m...|"
+test1 = ChordProgression("test1", chords, "4/4", "B", 100)
+print(test1)
+test2 = TransposeCP(test1, 1)
+print(test2)

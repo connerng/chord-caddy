@@ -1,8 +1,8 @@
 
-notes_s = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
+notes_s = ["G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G"]
 notes_f = ["Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G"]
 
-def Transpose(chord: str, semitones: int, sf: str):
+def Transpose(chord: str, semitones: int, newSF: str, oldSF: str):
     new_chord = ""
     minor = False
     if 'm' in chord:
@@ -10,9 +10,15 @@ def Transpose(chord: str, semitones: int, sf: str):
         chord = chord[0:len(chord)-1]
     if chord not in notes_s and chord not in notes_f:
         return "Err"
-    if sf == "s":
-        # key uses sharps
+    
+    if oldSF == "s":
+        # old key uses sharps
         cur_index = notes_s.index(chord)
+    else:
+        # old key uses flats
+        cur_index = notes_f.index(chord)
+    if newSF == "s":
+        # new key uses sharps
         if semitones > 0:
             for i in range(0, semitones):
                 if cur_index == len(notes_s) - 1:
@@ -28,8 +34,7 @@ def Transpose(chord: str, semitones: int, sf: str):
                     cur_index -= 1
             new_chord = notes_s[cur_index]
     else:
-        # key uses flats
-        cur_index = notes_f.index(chord)
+        # new key uses flats
         if semitones > 0:
             for i in range(0, semitones):
                 if cur_index == len(notes_f) - 1:
