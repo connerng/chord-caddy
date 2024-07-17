@@ -2,7 +2,7 @@ from transposer import *
 from typing import List
 
 flatKeys = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb"]
-sharpKeys = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#"]
+sharpKeys = ["G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#"]
 
 class ChordProgression:
     chordProg: List[str] = []
@@ -69,8 +69,3 @@ def TransposeCP(cp: ChordProgression, semitones: int):
     newProg = ChordProgression(cp.name, cpStr, cp.timeSig, newKey, cp.bpm)
     return newProg
 
-chords = "|B...|F#...|E...|G#m...|"
-test1 = ChordProgression("test1", chords, "4/4", "B", 100)
-print(test1)
-test2 = TransposeCP(test1, 1)
-print(test2)

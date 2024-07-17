@@ -10,8 +10,12 @@ import customtkinter as ctk
 chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
           'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
           'G#', 'G#m']
+chords_f= ['.','Ab', 'Abm', 'A', 'Am', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'Db', 'Dbm', 'D', 'Dm', 'Eb', 'Ebm', 
+           'E', 'Em', 'F', 'Fm', 'Gb', 'Gbm', 'G', 'Gm']
+chords_s = ['.', 'A', 'Am', 'A#', 'A#m', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'D', 'Dm', 'D#', 'D#m', 'E', 'Em', 
+            'F', 'Fm', 'F#', 'F#m', 'G', 'Gm', 'G#', 'G#m']
 
-keys = ['.', 'Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
+keys = ['(Key)', 'Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
 
 root = ctk.CTk()
 root.title("Chord Caddy")
@@ -24,44 +28,64 @@ style.theme_use('vista')
 def create_new_clicked():
 
     def ts_44_clicked():
-        create_new_clicked()
+        for widget in chordFrame.winfo_children():
+            widget.destroy()
         global timeSignature
         timeSignature = "4/4"
         global chordProgCB
         chordProgCB = []
 
         for r in range(1, 5):
-            curFrame = tk.Frame(root, bg='light yellow')
-            curFrame.pack(pady=3)
+            curFrame = ctk.CTkFrame(chordFrame, fg_color='#606D5D')
+            curFrame.pack(pady=5, padx=5)
             for col in range(1, 5):
-                cur = ttk.Combobox(curFrame, values=chords, state='readonly', width=5)
-                cur.current(0)
-                cur.pack(side='left', padx=1)
+                cur = ctk.CTkComboBox(curFrame, values=chords, state='normal', width=80, dropdown_fg_color='#fff1d9', 
+                             dropdown_font=('Roboto', 10, 'bold'), dropdown_hover_color='#D3CDD7', 
+                             font=('Roboto', 16, 'bold'), corner_radius=10, hover=True, button_hover_color='white')
+                if keysCB.get() in flatKeys:
+                    cur.configure(values=chords_f)
+                    cur.set(chords_f[0])
+                elif keysCB.get() in sharpKeys:
+                    cur.configure(values=chords_s)
+                    cur.set(chords_s[0])
+                else:
+                    cur.set(chords[0])
+                cur.pack(side='left', padx=3)
                 chordProgCB.append(cur)
 
     def ts_68_clicked():
-        create_new_clicked()
+        for widget in chordFrame.winfo_children():
+            widget.destroy()
         global timeSignature
         timeSignature = "6/8"
         global chordProgCB
         chordProgCB = []
 
         for r in range(1, 5):
-            curFrame = tk.Frame(root, bg='light yellow')
-            curFrame.pack(pady=3)
+            curFrame = ctk.CTkFrame(chordFrame, fg_color='#606D5D')
+            curFrame.pack(pady=5, padx=5)
             for col in range(1, 7):
-                cur = ttk.Combobox(curFrame, values=chords, state='readonly', width=5)
-                cur.current(0)
-                cur.pack(side='left', padx=1)
+                cur = ctk.CTkComboBox(curFrame, values=chords, state='normal', width=80, dropdown_fg_color='#fff1d9', 
+                             dropdown_font=('Roboto', 10, 'bold'), dropdown_hover_color='#D3CDD7', 
+                             font=('Roboto', 16, 'bold'), corner_radius=10, hover=True, button_hover_color='white')
+                if keysCB.get() in flatKeys:
+                    cur.configure(values=chords_f)
+                    cur.set(chords_f[0])
+                elif keysCB.get() in sharpKeys:
+                    cur.configure(values=chords_s)
+                    cur.set(chords_s[0])
+                else:
+                    cur.set(chords[0])
+                cur.pack(side='left', padx=3)
                 chordProgCB.append(cur)
 
     def save_clicked():
         if cp_name_entry.get() == "":
-            warningLabel.config(text="Please Enter Name")
+            warningLabel.configure(text="Please Enter Name")
         elif keysCB.get() == '.':
-            warningLabel.config(text="Please Select Key")
-        elif 'chordProg' not in globals():
-            warningLabel.config(text="Error: No Chords")
+            warningLabel.configure(text="Please Select Key")
+        elif 'chordProgCB' not in globals():
+            warningLabel.configure(text="Error: No Chords")
         else:
             cpStr = "|"
             for i in range(0, len(chordProgCB)):
@@ -78,63 +102,92 @@ def create_new_clicked():
     
     def bpm_down_clicked():
         bpm_scale.set(bpm_scale.get() - 1)
+        lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
 
     def bpm_up_clicked():
         bpm_scale.set(bpm_scale.get() + 1)
+        lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
+
+    def bpm_change(event):
+        lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
+
+    def key_select(event):
+        if 'chordProgCB' in globals():
+            curKey = keysCB.get()
+            for cb in chordProgCB:
+                if curKey in flatKeys:
+                    cb.configure(values=chords_f)
+                else:
+                    cb.configure(values=chords_s)
 
     clearWindow()
     keysList = keys
-    topFrame = ctk.CTkFrame(root, width=500, height=50, fg_color='#606D5D')
+    topFrame = ctk.CTkFrame(root)
     topFrame.pack(fill='x')
-    new_cp_title = ctk.CTkLabel(topFrame, text="Create New Chord Progression", font=('Segoe Print', 20, 'bold'), text_color='white')
+    topFrame1 = ctk.CTkFrame(topFrame, width=500, height=75, fg_color='#606D5D')
+    topFrame1.pack(fill='x', pady=(5, 2.5), padx=5)
+    new_cp_title = ctk.CTkLabel(topFrame1, text="Create New Chord Progression", font=('Roboto', 22, 'bold'), text_color='white')
     new_cp_title.pack(pady=10)
 
     middleFrame = ctk.CTkFrame(root, fg_color='#D3CDD7')
     middleFrame.pack(fill='x')
-    midFrame1 = ctk.CTkFrame(middleFrame, width=292.5, height=200, fg_color='#DDF2EB')
+    midFrame1 = ctk.CTkFrame(middleFrame, width=292.5, height= 175, fg_color='#DDF2EB')
     midFrame1.pack(side='left', padx=(5,2.5), pady=5, fill='both', expand=True)
-    midFrame2 = ctk.CTkFrame(middleFrame, width=292.5, height=200, fg_color='#DDF2EB')
+    midFrame2 = ctk.CTkFrame(middleFrame, width=292.5, height=175, fg_color='#DDF2EB')
     midFrame2.pack(side='left', padx=(2.5,5), pady=5, fill='both', expand=True)
 
     bottomFrame = ctk.CTkFrame(root, fg_color='#D3CDD7')
     bottomFrame.pack(fill='both')
-    bottomFrame1 = ctk.CTkFrame(bottomFrame, width=590, height=220, fg_color='#88958D')
-    bottomFrame1.pack(pady=(0,5))
+    bottomFrame1 = ctk.CTkFrame(bottomFrame, width=590, height=300, fg_color='#88958D')
+    bottomFrame1.pack(padx=5, pady=(0,5), fill='both')
+    bottomFrame2 = ctk.CTkFrame(bottomFrame, fg_color='gray')
+    bottomFrame2.pack(side='bottom', padx=5, pady=(0,5), fill='both')
 
+    cp_name_entry = ctk.CTkEntry(midFrame1, width=175, height=30, corner_radius=10, font=('Roboto', 16), placeholder_text="Enter Name")
+    cp_name_entry.pack(pady=(20,10))
 
-    nameFrame = ctk.CTkFrame(midFrame1, fg_color='#DDF2EB')
-    lbl_cpname = ctk.CTkLabel(nameFrame, text="Name: ", font=('Helvetica', 18, 'bold'), fg_color='#DDF2EB')
-    cp_name_entry = ctk.CTkEntry(nameFrame, width=175, height=30, corner_radius=10, font=('Helvetica', 16))
-
-    nameFrame.pack(pady=(20,5))
-    lbl_cpname.pack(side='left')
-    cp_name_entry.pack(side='left')
-
-
-    keyFrame = ctk.CTkFrame(midFrame1, fg_color='#DDF2EB')
-    lbl_key = ctk.CTkLabel(keyFrame, text="Key: ", font=('Helvetica', 18, 'bold'), fg_color='#DDF2EB' )
-    keysCB = ctk.CTkComboBox(keyFrame, values=keysList, state='readonly', width=100, dropdown_fg_color='#efe1c8', 
-                             dropdown_font=('Helvetica', 12, 'bold'), dropdown_hover_color='#D3CDD7', 
-                             font=('Helvetica', 16, 'bold'), corner_radius=10)
+    keysCB = ctk.CTkComboBox(midFrame1, values=keysList, state='normal', width=100, dropdown_fg_color='#fff1d9', 
+                             dropdown_font=('Roboto', 12, 'bold'), dropdown_hover_color='#D3CDD7', 
+                             font=('Roboto', 16, 'bold'), corner_radius=10, hover=True, button_hover_color='white', command=key_select)
     keysCB.set(keysList[0])
+    keysCB.pack(pady=(10,20))
 
-    keyFrame.pack(pady=15)
-    lbl_key.pack(side='left')
-    keysCB.pack(side='left')
-
-    bpmFrame = tk.Frame(root, bg='light yellow')
-    bpm_down = ttk.Button(bpmFrame, text="<<", width=3, command=bpm_down_clicked)
-    bpm_scale = tk.Scale(bpmFrame, from_=30, to=250, orient='horizontal', length=300, label="BPM")
+    bpmFrame = ctk.CTkFrame(midFrame2, fg_color='#DDF2EB')
+    lbl_bpm = ctk.CTkLabel(midFrame2, text="BPM: 100", font=('Roboto', 16, 'bold'), fg_color='#DDF2EB')
+    bpm_down = ctk.CTkButton(bpmFrame, text="<<", width=20, fg_color='#88958D', hover_color='white', 
+                             text_color='black', corner_radius=10, command=bpm_down_clicked)
+    bpm_scale = ctk.CTkSlider(bpmFrame, from_=30, to=250, number_of_steps=220, button_color='black', 
+                              button_hover_color='white', command=bpm_change)
     bpm_scale.set(100)
-    bpm_up = ttk.Button(bpmFrame, text=">>", width=3, command=bpm_up_clicked)
+    bpm_up = ctk.CTkButton(bpmFrame, text=">>", width=20, fg_color='#88958D', hover_color='white', 
+                           text_color='black', corner_radius=10, command=bpm_up_clicked)
 
-    timeSigFrame = tk.Frame(root, bg='light yellow')
-    lbl_timeSig = ttk.Label(timeSigFrame, text="Time Signature:", font=('Helvetica', 10), background='light yellow')
-    ts_44_button = ttk.Button(timeSigFrame, text="4/4", width=10, command=ts_44_clicked)
-    ts_68_button = ttk.Button(timeSigFrame, text="6/8", width=10, command=ts_68_clicked)
+    lbl_bpm.pack(pady=(20, 0))
+    bpmFrame.pack(pady=5)
+    bpm_down.pack(side='left')
+    bpm_scale.pack(side='left')
+    bpm_up.pack(side='left')
 
-    saveButton = ttk.Button(root, text="Save", width=10, command=save_clicked)
-    warningLabel = ttk.Label(root, text="", font=('Helvetica', 10), background='light yellow')
+    timeSigFrame = ctk.CTkFrame(bottomFrame1, width=110, fg_color='#88958D')
+    ts_44_button = ctk.CTkButton(timeSigFrame, text="4/4", width=100, text_color='black', border_color='white', 
+                                 border_width=2, hover_color='white', fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
+                                 command=ts_44_clicked)
+    ts_68_button = ctk.CTkButton(timeSigFrame, text="6/8", width=100, text_color='black', border_color='white', 
+                                 border_width=2, hover_color='white', fg_color='#DDF2EB', font=('Roboto', 16, 'bold'),
+                                 command=ts_68_clicked)
+
+    timeSigFrame.pack(pady=10)
+    ts_44_button.pack(side='left', padx=5)
+    ts_68_button.pack(side='left', padx=5)
+
+    chordFrame = ctk.CTkFrame(bottomFrame1, width=110, height=160, fg_color='#606D5D', corner_radius=10)
+    chordFrame.pack(pady=(0,10))
+
+    saveButton = ctk.CTkButton(bottomFrame2, text="Save", text_color='black', hover_color='white', width=100, 
+                               fg_color='#DDF2EB', corner_radius=10, font=('Roboto', 16, 'bold'), command=save_clicked)
+    saveButton.pack(pady=10)
+    warningLabel = ctk.CTkLabel(bottomFrame2, text="", text_color='red', font=('Roboto', 12), fg_color='gray')
+    warningLabel.pack(pady=(0,10))
 
 
 def play_clicked():
