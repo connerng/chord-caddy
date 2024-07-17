@@ -5,6 +5,7 @@ from tkinter.messagebox import showinfo
 from chordprog import *
 from view import *
 from database import *
+import customtkinter as ctk
 
 chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
           'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
@@ -12,12 +13,13 @@ chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 
 
 keys = ['.', 'Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
 
+root = ctk.CTk()
+root.title("Chord Caddy")
+root.geometry('600x500')
 
-def show(widget):
-    widget.pack()
+style = ttk.Style()
+style.theme_use('vista')
 
-def hide(widget):
-    widget.pack_forget()
 
 def create_new_clicked():
 
@@ -82,17 +84,43 @@ def create_new_clicked():
 
     clearWindow()
     keysList = keys
-    new_cp_title = ttk.Label(root, text="Create New Chord Progression", font=('Helvetica', 14), background='light yellow')
-    new_cp_title.pack()
+    topFrame = ctk.CTkFrame(root, width=500, height=50, fg_color='#606D5D')
+    topFrame.pack(fill='x')
+    new_cp_title = ctk.CTkLabel(topFrame, text="Create New Chord Progression", font=('Segoe Print', 20, 'bold'), text_color='white')
+    new_cp_title.pack(pady=10)
 
-    nameFrame = tk.Frame(root, bg='light yellow')
-    lbl_cpname = ttk.Label(nameFrame, text="Name: ", font=('Helvetica', 10), background='light yellow')
-    cp_name_entry = ttk.Entry(nameFrame)
+    middleFrame = ctk.CTkFrame(root, fg_color='#D3CDD7')
+    middleFrame.pack(fill='x')
+    midFrame1 = ctk.CTkFrame(middleFrame, width=292.5, height=200, fg_color='#DDF2EB')
+    midFrame1.pack(side='left', padx=(5,2.5), pady=5, fill='both', expand=True)
+    midFrame2 = ctk.CTkFrame(middleFrame, width=292.5, height=200, fg_color='#DDF2EB')
+    midFrame2.pack(side='left', padx=(2.5,5), pady=5, fill='both', expand=True)
 
-    keyFrame = tk.Frame(root, bg='light yellow')
-    lbl_key = ttk.Label(keyFrame, text="Key: ", font=('Helvetica', 10), background='light yellow')
-    keysCB = ttk.Combobox(keyFrame, values=keysList, state='readonly', width=5)
-    keysCB.current(0)
+    bottomFrame = ctk.CTkFrame(root, fg_color='#D3CDD7')
+    bottomFrame.pack(fill='both')
+    bottomFrame1 = ctk.CTkFrame(bottomFrame, width=590, height=220, fg_color='#88958D')
+    bottomFrame1.pack(pady=(0,5))
+
+
+    nameFrame = ctk.CTkFrame(midFrame1, fg_color='#DDF2EB')
+    lbl_cpname = ctk.CTkLabel(nameFrame, text="Name: ", font=('Helvetica', 18, 'bold'), fg_color='#DDF2EB')
+    cp_name_entry = ctk.CTkEntry(nameFrame, width=175, height=30, corner_radius=10, font=('Helvetica', 16))
+
+    nameFrame.pack(pady=(20,5))
+    lbl_cpname.pack(side='left')
+    cp_name_entry.pack(side='left')
+
+
+    keyFrame = ctk.CTkFrame(midFrame1, fg_color='#DDF2EB')
+    lbl_key = ctk.CTkLabel(keyFrame, text="Key: ", font=('Helvetica', 18, 'bold'), fg_color='#DDF2EB' )
+    keysCB = ctk.CTkComboBox(keyFrame, values=keysList, state='readonly', width=100, dropdown_fg_color='#efe1c8', 
+                             dropdown_font=('Helvetica', 12, 'bold'), dropdown_hover_color='#D3CDD7', 
+                             font=('Helvetica', 16, 'bold'), corner_radius=10)
+    keysCB.set(keysList[0])
+
+    keyFrame.pack(pady=15)
+    lbl_key.pack(side='left')
+    keysCB.pack(side='left')
 
     bpmFrame = tk.Frame(root, bg='light yellow')
     bpm_down = ttk.Button(bpmFrame, text="<<", width=3, command=bpm_down_clicked)
@@ -105,28 +133,8 @@ def create_new_clicked():
     ts_44_button = ttk.Button(timeSigFrame, text="4/4", width=10, command=ts_44_clicked)
     ts_68_button = ttk.Button(timeSigFrame, text="6/8", width=10, command=ts_68_clicked)
 
-    nameFrame.pack(pady=5)
-    lbl_cpname.pack(side='left', padx=(0,2))
-    cp_name_entry.pack(side='left', padx=2)
-
-    keyFrame.pack(pady=5)
-    lbl_key.pack(side='left', padx=(0,2))
-    keysCB.pack(side='left', padx=2)
-
-    bpmFrame.pack(pady=5)
-    bpm_down.pack(side='left', padx=(0,2))
-    bpm_scale.pack(side='left', padx=2)
-    bpm_up.pack(side='left', padx=2)
-
-    timeSigFrame.pack(pady=5)
-    lbl_timeSig.pack(side='left', padx=(0,2))
-    ts_44_button.pack(side='left', padx=2)
-    ts_68_button.pack(side='left', padx=2)
-    
     saveButton = ttk.Button(root, text="Save", width=10, command=save_clicked)
     warningLabel = ttk.Label(root, text="", font=('Helvetica', 10), background='light yellow')
-    saveButton.place(x=215, y=305)
-    warningLabel.place(x=195, y=340)
 
 
 def play_clicked():
@@ -199,20 +207,27 @@ def lib_clicked():
                     chordProgCB.append(curCB)
 
         def save_edit_clicked():
-            cpStr = "|"
-            for i in range(0, len(chordProgCB)):
-                cpStr += chordProgCB[i].get()
-                if curTime == "4/4":
-                    if (i+1)%4 == 0:
-                        cpStr += "|"
-                else:
-                    if (i+1)%6 == 0:
-                        cpStr += "|"
-            cp = ChordProgression(cp_name_entry.get(), cpStr, curTime, keysCB.get(), bpm_scale.get())
-            df.loc[curIndex] = [cp_name_entry.get(), keysCB.get(), bpm_scale.get(), curTime, cp.ToString()]
-            print(df)
-            Save()
-            lib_clicked()
+            if cp_name_entry.get() == "":
+                warningLabel.config(text="Please Enter Name")
+            elif keysCB.get() == '.':
+                warningLabel.config(text="Please Select Key")
+            elif 'chordProg' not in globals():
+                warningLabel.config(text="Error: No Chords")
+            else:
+                cpStr = "|"
+                for i in range(0, len(chordProgCB)):
+                    cpStr += chordProgCB[i].get()
+                    if curTime == "4/4":
+                        if (i+1)%4 == 0:
+                            cpStr += "|"
+                    else:
+                        if (i+1)%6 == 0:
+                            cpStr += "|"
+                cp = ChordProgression(cp_name_entry.get(), cpStr, curTime, keysCB.get(), bpm_scale.get())
+                df.loc[curIndex] = [cp_name_entry.get(), keysCB.get(), bpm_scale.get(), curTime, cp.ToString()]
+                print(df)
+                Save()
+                lib_clicked()
         
         def cancel_clicked():
             keysCB.set(origKey)
@@ -315,6 +330,9 @@ def lib_clicked():
         saveButton.pack(side='left', padx=2)
         cancelButton = ttk.Button(buttonFrame, text="Cancel", width=15, command=cancel_clicked)
         cancelButton.pack(side='left', padx=2)
+        warningLabel = ttk.Label(root, text="", font=('Helvetica', 10), background='light yellow')
+        warningLabel.pack(pady=10)
+        
         
     # Library Screen
     clearWindow()
@@ -352,15 +370,6 @@ def lib_clicked():
     del_button = ttk.Button(frame_de, text="Delete", width=10, command=delete_clicked)
     edit_button = ttk.Button(frame_de, text="Edit", width=10, command=edit_clicked)
 
-
-
-root = tk.Tk()
-root.title("Chord Caddy")
-root.geometry('500x400')
-root['bg'] = 'light yellow'
-
-style = ttk.Style()
-style.theme_use('vista')
 
 mainmenu = tk.Menu(root)
 mainmenu.add_command(label = "Create New", command = create_new_clicked)
