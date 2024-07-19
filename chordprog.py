@@ -3,6 +3,15 @@ from typing import List
 
 flatKeys = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb"]
 sharpKeys = ["G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#"]
+chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
+          'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
+          'G#', 'G#m']
+chords_f= ['.','Ab', 'Abm', 'A', 'Am', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'Db', 'Dbm', 'D', 'Dm', 'Eb', 'Ebm', 
+           'E', 'Em', 'F', 'Fm', 'Gb', 'Gbm', 'G', 'Gm']
+chords_s = ['.', 'A', 'Am', 'A#', 'A#m', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'D', 'Dm', 'D#', 'D#m', 'E', 'Em', 
+            'F', 'Fm', 'F#', 'F#m', 'G', 'Gm', 'G#', 'G#m']
+
+keys = ['(Key)', 'Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
 
 class ChordProgression:
     chordProg: List[str] = []

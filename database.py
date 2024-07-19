@@ -17,7 +17,6 @@ def AddNew(cp: ChordProgression):
     print(df)
 
 def Delete(i: int):
-    del chords_list[i]
     df.drop(index=i, inplace=True)
     print(df)
     df.to_csv('chord_data.csv', index=False)

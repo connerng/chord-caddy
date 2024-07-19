@@ -7,15 +7,11 @@ from view import *
 from database import *
 import customtkinter as ctk
 
-chords = ['.','Ab', 'Abm', 'A', 'Am', 'A#', 'A#m', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'Db', 'Dbm', 
-          'D', 'Dm', 'D#', 'D#m', 'Eb', 'Ebm', 'E', 'Em', 'F', 'Fm', 'F#', 'F#m', 'Gb', 'Gbm', 'G', 'Gm', 
-          'G#', 'G#m']
-chords_f= ['.','Ab', 'Abm', 'A', 'Am', 'Bb', 'Bbm', 'B', 'Bm', 'C', 'Cm', 'Db', 'Dbm', 'D', 'Dm', 'Eb', 'Ebm', 
-           'E', 'Em', 'F', 'Fm', 'Gb', 'Gbm', 'G', 'Gm']
-chords_s = ['.', 'A', 'Am', 'A#', 'A#m', 'B', 'Bm', 'C', 'Cm', 'C#', 'C#m', 'D', 'Dm', 'D#', 'D#m', 'E', 'Em', 
-            'F', 'Fm', 'F#', 'F#m', 'G', 'Gm', 'G#', 'G#m']
-
-keys = ['(Key)', 'Ab', 'A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#']
+battleship_gray = '#88958D'
+ebony = '#606D5D'
+french_gray = '#D3CDD7'
+mint_green = '#DDF2EB'
+tan = '#fff1d9'
 
 root = ctk.CTk()
 root.title("Chord Caddy")
@@ -197,7 +193,7 @@ def lib_clicked():
 
     def doubleclick_lb(event):
         curSelection = lib_list.curselection()
-        lbl_cur_sel.config(text=lib_list.get(curSelection))
+        lbl_cur_sel.configure(text=lib_list.get(curSelection))
         
         tmp = df[df['Name'] == lib_list.get(curSelection)].index.values
         global curIndex
@@ -209,20 +205,80 @@ def lib_clicked():
         txt_bpm = "BPM: " + str(df['BPM'][curIndex])
         txt_ts = "Time Signature: " + df['Time Signature'][curIndex]
 
-        lbl_cur_chords.config(text=txt_chords)
-        lbl_cur_key.config(text=txt_key)
-        lbl_cur_bpm.config(text=txt_bpm)
-        lbl_cur_ts.config(text=txt_ts)
+        lbl_cur_chords.configure(text=txt_chords)
+        lbl_cur_key.configure(text=txt_key)
+        lbl_cur_bpm.configure(text=txt_bpm)
+        lbl_cur_ts.configure(text=txt_ts)
 
-        frame_de.pack(pady=5)
-        del_button.pack(side='left')
-        edit_button.pack(side='right')
+        frame_de.pack(pady=(0,20))
+        del_button.pack(side='left', padx=5)
+        edit_button.pack(side='right', padx=5)
     
     def delete_clicked():
         cs = lib_list.curselection()
         curIndex = df[df['Name'] == lib_list.get(cs)].index.values
+        print(curIndex[0])
         Delete(curIndex[0])
         lib_clicked()
+
+    def edit():
+        def key_change(event):
+            print("key change")
+
+        curInd = curIndex
+        curName = df['Name'][curInd]
+        curChords = df['Chords'][curInd]
+        curTime = df['Time Signature'][curInd]
+        curKey = df['Key'][curInd]
+        curBPM = int(df['BPM'][curInd])
+        cur = ChordProgression(curName, curChords, curTime, curKey, curBPM)
+        for widget in bottomFrame2.winfo_children():
+            widget.destroy()
+
+        edit_title = ctk.CTkLabel(bottomFrame2, text="Edit \"" + curName + "\"", font=('Roboto', 20, 'bold'), 
+                                  fg_color='#88958D')
+        edit_title.pack(pady=20)
+
+        edit_name = ctk.CTkEntry(bottomFrame2, placeholder_text=curName, width=175, height=30, corner_radius=10, font=('Roboto', 16))
+        edit_name.pack(pady=(0,10))
+
+        keyFrame = ctk.CTkFrame(bottomFrame2, fg_color='#88958D')
+        keyFrame.pack(pady=5)
+        lbl_key = ctk.CTkLabel(keyFrame, text="Key: ", font=('Roboto', 14, 'bold'), fg_color='#88958D')
+        lbl_key.pack(side='left', padx=2)
+        keysCB = ctk.CTkComboBox(keyFrame, values=keys, state='normal', width=100, dropdown_fg_color='#fff1d9', 
+                                 dropdown_font=('Roboto', 12, 'bold'), dropdown_hover_color='#D3CDD7', 
+                                 font=('Roboto', 16, 'bold'), corner_radius=10, hover=True, button_color='dark gray',  
+                                 button_hover_color='white', command=key_change)
+        keysCB.set(curKey)
+        keysCB.pack(side='left', padx=2)
+
+        def bpm_down_clicked():
+            bpm_scale.set(bpm_scale.get() - 1)
+            lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
+
+        def bpm_up_clicked():
+            bpm_scale.set(bpm_scale.get() + 1)
+            lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
+
+        def bpm_change(event):
+            lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
+
+        bpmFrame = ctk.CTkFrame(bottomFrame2, fg_color=battleship_gray)
+        lbl_bpm = ctk.CTkLabel(bottomFrame2, text="BPM: 100", font=('Roboto', 16, 'bold'), fg_color=battleship_gray)
+        bpm_down = ctk.CTkButton(bpmFrame, text="<<", width=20, fg_color=ebony, hover_color='white', 
+                                text_color='black', corner_radius=10, command=bpm_down_clicked)
+        bpm_scale = ctk.CTkSlider(bpmFrame, from_=30, to=250, number_of_steps=220, button_color='black', 
+                                button_hover_color='white', fg_color=mint_green, progress_color=mint_green, command=bpm_change)
+        bpm_scale.set(curBPM)
+        bpm_up = ctk.CTkButton(bpmFrame, text=">>", width=20, fg_color=ebony, hover_color='white', 
+                            text_color='black', corner_radius=10, command=bpm_up_clicked)
+
+        lbl_bpm.pack(pady=(5,0))
+        bpmFrame.pack(pady=5)
+        bpm_down.pack(side='left')
+        bpm_scale.pack(side='left')
+        bpm_up.pack(side='left')
 
 
     def edit_clicked():
@@ -330,25 +386,6 @@ def lib_clicked():
         cur = ChordProgression(curName, curChords, curTime, curKey, curBPM)
         
         clearWindow()
-        edit_title = ttk.Label(root, text="Edit \"" + curName + "\"", font=('Helvetica', 14), background='light yellow')
-        edit_title.pack()
-
-        nameFrame = tk.Frame(root, bg='light yellow')
-        nameFrame.pack(pady=5)
-        lbl_cpname = ttk.Label(nameFrame, text="Name: ", font=('Helvetica', 10), background='light yellow')
-        lbl_cpname.pack(side='left', padx=2)
-        cp_name_entry = ttk.Entry(nameFrame)
-        cp_name_entry.insert(0, curName)
-        cp_name_entry.pack(side='left', padx=2)
-
-        keyFrame = tk.Frame(root, bg='light yellow')
-        keyFrame.pack(pady=5)
-        lbl_key = ttk.Label(keyFrame, text="Key: ", font=('Helvetica', 10), background='light yellow')
-        lbl_key.pack(side='left', padx=2)
-        keysCB = ttk.Combobox(keyFrame, values=keys, state='readonly', width=5)
-        keysCB.current(keys.index(curKey))
-        keysCB.bind("<<ComboboxSelected>>", key_change)
-        keysCB.pack(side='left', padx=2)
 
 
         bpmFrame = tk.Frame(root, bg='light yellow')
@@ -389,7 +426,11 @@ def lib_clicked():
         
     # Library Screen
     clearWindow()
-    lib_title = ttk.Label(root, text="Library", font=('Helvetica', 14), background='light yellow')
+    topFrame = ctk.CTkFrame(root)
+    topFrame.pack(fill='x')
+    topFrame1 = ctk.CTkFrame(topFrame, width=500, fg_color='#606D5D')
+    topFrame1.pack(fill='both', pady=(5, 2.5), padx=5)
+    lib_title = ctk.CTkLabel(topFrame1, text="Library", font=('Roboto', 22, 'bold'), text_color='white', height=40)
     lib_title.pack()
 
     cp_names = []
@@ -397,31 +438,42 @@ def lib_clicked():
         cp_names.append(df['Name'][ind])
     cp_names.sort()
 
-    scroll = ttk.Scrollbar(root)
-    lib_list_var = tk.Variable(value=cp_names)
-    lib_list = tk.Listbox(root, yscrollcommand=scroll.set, listvariable=lib_list_var)
-    lib_list.bind('<Double-1>', doubleclick_lb)
-    lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
-    scroll.pack(side='left')
+    bottomFrame = ctk.CTkFrame(root)
+    bottomFrame.pack(fill='both')
+    bottomFrame1 = ctk.CTkFrame(bottomFrame, fg_color='#88958D', )
+    bottomFrame1.pack(side='left', padx=5, pady=5, fill='y')
 
-    lbl_cur_sel = ttk.Label(root, text="Name", font=('Helvetica', 12, 'bold'), background='light yellow')
+    scroll = ttk.Scrollbar(bottomFrame1)
+    lib_list_var = tk.Variable(value=cp_names)
+    lib_list = tk.Listbox(bottomFrame1, yscrollcommand=scroll.set, listvariable=lib_list_var, 
+                          font=('Roboto', 14, 'bold'), bg='#DDF2EB', height=350)
+    lib_list.bind('<Double-1>', doubleclick_lb)
+    lib_list.pack(side='left', fill='y', padx=(30,0), pady=20)
+    scroll.pack(side='left', padx=(5,20))
+
+    bottomFrame2 = ctk.CTkFrame(bottomFrame, fg_color='#88958D', width=400)
+    bottomFrame2.pack(side='left', padx=(0,5), pady=5, fill='both', expand=True)
+
+    lbl_cur_sel = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 20, 'bold'), fg_color='#88958D')
     lbl_cur_sel.pack(pady=(20, 5))
 
-    lbl_cur_key = ttk.Label(root, text="Key: ", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_key = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 14, 'bold'), fg_color='#88958D')
     lbl_cur_key.pack(pady=5)
 
-    lbl_cur_bpm = ttk.Label(root, text="BPM: ", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_bpm = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 14, 'bold'), fg_color='#88958D')
     lbl_cur_bpm.pack(pady=5)
 
-    lbl_cur_ts = ttk.Label(root, text="Time Signature:", font=('Helvetica', 12), background='light yellow')
+    lbl_cur_ts = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 14, 'bold'), fg_color='#88958D')
     lbl_cur_ts.pack(pady=5)
 
-    lbl_cur_chords = ttk.Label(root, text="| | | |", font=('Helvetica', 12), background='light yellow')
-    lbl_cur_chords.pack(pady=5)
+    lbl_cur_chords = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 16, 'bold'), fg_color='#88958D')
+    lbl_cur_chords.pack(pady=(5,20))
 
-    frame_de = ttk.Frame(root, width=100, height=20)    
-    del_button = ttk.Button(frame_de, text="Delete", width=10, command=delete_clicked)
-    edit_button = ttk.Button(frame_de, text="Edit", width=10, command=edit_clicked)
+    frame_de = ctk.CTkFrame(bottomFrame2, width=100, height=20, fg_color='#88958D')    
+    del_button = ctk.CTkButton(frame_de, text="Delete", width=50, fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
+                               text_color='black', hover_color='white', command=delete_clicked)
+    edit_button = ctk.CTkButton(frame_de, text="Edit", width=50, fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
+                                text_color='black', hover_color='white', command=edit)
 
 
 mainmenu = tk.Menu(root)
