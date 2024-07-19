@@ -192,6 +192,29 @@ def play_clicked():
 def lib_clicked():
 
     def doubleclick_lb(event):
+        for widget in bottomFrame2.winfo_children():
+            widget.destroy()
+
+        lbl_cur_sel = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 20, 'bold'), fg_color='#88958D')
+        lbl_cur_sel.pack(pady=(20, 5))
+
+        lbl_cur_key = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 14, 'bold'), fg_color='#88958D')
+        lbl_cur_key.pack(pady=5)
+
+        lbl_cur_bpm = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 14, 'bold'), fg_color='#88958D')
+        lbl_cur_bpm.pack(pady=5)
+
+        lbl_cur_ts = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 14, 'bold'), fg_color='#88958D')
+        lbl_cur_ts.pack(pady=5)
+
+        lbl_cur_chords = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 16, 'bold'), fg_color='#88958D')
+        lbl_cur_chords.pack(pady=(5,20))
+
+        frame_de = ctk.CTkFrame(bottomFrame2, width=100, height=20, fg_color='#88958D')    
+        del_button = ctk.CTkButton(frame_de, text="Delete", width=50, fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
+                                text_color='black', hover_color='white', command=delete_clicked)
+        edit_button = ctk.CTkButton(frame_de, text="Edit", width=50, fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
+                                    text_color='black', hover_color='white', command=edit)
         curSelection = lib_list.curselection()
         lbl_cur_sel.configure(text=lib_list.get(curSelection))
         
@@ -223,7 +246,20 @@ def lib_clicked():
 
     def edit():
         def key_change(event):
-            print("key change")
+            newKey = keysCB.get()
+            if curKey in flatKeys:
+                indexOld = notes_f.index(curKey)
+            else:
+                indexOld = notes_s.index(curKey)
+            if newKey in flatKeys:
+                indexNew = notes_f.index(newKey)
+            else:
+                indexNew = notes_s.index(newKey)
+            semitones = indexNew - indexOld
+            transposed = TransposeCP(cur, semitones)
+            df.loc[curIndex] = [transposed.name, transposed.key, transposed.bpm, transposed.timeSig, transposed.ToString()]
+            print(df)
+            edit()
 
         curInd = curIndex
         curName = df['Name'][curInd]
@@ -237,9 +273,11 @@ def lib_clicked():
 
         edit_title = ctk.CTkLabel(bottomFrame2, text="Edit \"" + curName + "\"", font=('Roboto', 20, 'bold'), 
                                   fg_color='#88958D')
-        edit_title.pack(pady=20)
+        edit_title.pack(pady=10)
 
-        edit_name = ctk.CTkEntry(bottomFrame2, placeholder_text=curName, width=175, height=30, corner_radius=10, font=('Roboto', 16))
+        edit_name = ctk.CTkEntry(bottomFrame2, width=175, height=30, corner_radius=10, 
+                                 font=('Roboto', 16))
+        edit_name.insert(0, curName)
         edit_name.pack(pady=(0,10))
 
         keyFrame = ctk.CTkFrame(bottomFrame2, fg_color='#88958D')
@@ -248,7 +286,7 @@ def lib_clicked():
         lbl_key.pack(side='left', padx=2)
         keysCB = ctk.CTkComboBox(keyFrame, values=keys, state='normal', width=100, dropdown_fg_color='#fff1d9', 
                                  dropdown_font=('Roboto', 12, 'bold'), dropdown_hover_color='#D3CDD7', 
-                                 font=('Roboto', 16, 'bold'), corner_radius=10, hover=True, button_color='dark gray',  
+                                 font=('Roboto', 16, 'bold'), corner_radius=10, hover=True, button_color=ebony,  
                                  button_hover_color='white', command=key_change)
         keysCB.set(curKey)
         keysCB.pack(side='left', padx=2)
@@ -280,44 +318,52 @@ def lib_clicked():
         bpm_scale.pack(side='left')
         bpm_up.pack(side='left')
 
+        chordFrame = ctk.CTkFrame(bottomFrame2, width=110, height=160, fg_color=battleship_gray, corner_radius=10)
+        chordFrame.pack(padx=5, pady=1)
 
-    def edit_clicked():
-        def ts_44():
-            global chordProgCB
-            chordProgCB = []
-            i = 0
+        global chordProgCB
+        chordProgCB = []
+        i = 0
+        if curTime == '4/4':
             for r in range(1, 5):
-                curFrame = tk.Frame(root, bg='light yellow')
-                curFrame.pack(pady=3)
+                curFrame = ctk.CTkFrame(chordFrame, fg_color=battleship_gray)
+                curFrame.pack(pady=5, padx=5)
                 for col in range(1, 5):
-                    curCB = ttk.Combobox(curFrame, values=chords, state='readonly', width=5)
+                    curCB = ctk.CTkComboBox(curFrame, values=chords, state='normal', width=70, dropdown_fg_color='#fff1d9', 
+                                dropdown_font=('Roboto', 10, 'bold'), dropdown_hover_color='#D3CDD7', 
+                                font=('Roboto', 12, 'bold'), corner_radius=10, hover=True, button_hover_color='white', button_color=ebony)
+                    if curKey in flatKeys:
+                        curCB.configure(values=chords_f)
+                    else:
+                        curCB.configure(values=chords_s)
                     while cur.chordProg[i] == '|':
                         i += 1
-                    curCB.current(chords.index(cur.chordProg[i]))
+                    curCB.set(cur.chordProg[i])
                     i += 1
-                    curCB.pack(side='left', padx=1)
+                    curCB.pack(side='left', padx=3)
                     chordProgCB.append(curCB)
-    
-
-        def ts_68():
-            global chordProgCB
-            chordProgCB = []
-            i = 0
+        else:
             for r in range(1, 5):
-                curFrame = tk.Frame(root, bg='light yellow')
-                curFrame.pack(pady=3)
+                curFrame = ctk.CTkFrame(chordFrame, fg_color=battleship_gray)
+                curFrame.pack(pady=5, padx=5)
                 for col in range(1, 7):
-                    curCB = ttk.Combobox(curFrame, values=chords, state='readonly', width=5)
+                    curCB = ctk.CTkComboBox(curFrame, values=chords, state='normal', width=65, dropdown_fg_color='#fff1d9', 
+                                dropdown_font=('Roboto', 10, 'bold'), dropdown_hover_color='#D3CDD7', 
+                                font=('Roboto', 10, 'bold'), corner_radius=10, hover=True, button_hover_color='white', button_color=ebony)
+                    if curKey in flatKeys:
+                        curCB.configure(values=chords_f)
+                    else:
+                        curCB.configure(values=chords_s)
                     while cur.chordProg[i] == '|':
                         i += 1
-                    curCB.current(chords.index(cur.chordProg[i]))
+                    curCB.set(cur.chordProg[i])
                     i += 1
                     curCB.pack(side='left', padx=1)
                     chordProgCB.append(curCB)
 
         def save_edit_clicked():
-            if cp_name_entry.get() == "":
-                warningLabel.config(text="Please Enter Name")
+            if edit_name.get() == "":
+                warningLabel.configure(text="Please Enter Name")
             elif keysCB.get() == '.':
                 warningLabel.config(text="Please Select Key")
             elif 'chordProg' not in globals():
@@ -332,12 +378,12 @@ def lib_clicked():
                     else:
                         if (i+1)%6 == 0:
                             cpStr += "|"
-                cp = ChordProgression(cp_name_entry.get(), cpStr, curTime, keysCB.get(), bpm_scale.get())
-                df.loc[curIndex] = [cp_name_entry.get(), keysCB.get(), bpm_scale.get(), curTime, cp.ToString()]
+                cp = ChordProgression(edit_name.get(), cpStr, curTime, keysCB.get(), bpm_scale.get())
+                df.loc[curIndex] = [edit_name.get(), keysCB.get(), bpm_scale.get(), curTime, cp.ToString()]
                 print(df)
                 Save()
                 lib_clicked()
-        
+
         def cancel_clicked():
             keysCB.set(origKey)
             newKey = keysCB.get()
@@ -354,74 +400,17 @@ def lib_clicked():
             df.loc[curIndex] = [transposed.name, transposed.key, transposed.bpm, transposed.timeSig, transposed.ToString()]
             print(df)
             lib_clicked()
-        
-        def key_change(event):
-            newKey = keysCB.get()
-            if curKey in flatKeys:
-                indexOld = notes_f.index(curKey)
-            else:
-                indexOld = notes_s.index(curKey)
-            if newKey in flatKeys:
-                indexNew = notes_f.index(newKey)
-            else:
-                indexNew = notes_s.index(newKey)
-            semitones = indexNew - indexOld
-            transposed = TransposeCP(cur, semitones)
-            df.loc[curIndex] = [transposed.name, transposed.key, transposed.bpm, transposed.timeSig, transposed.ToString()]
-            print(df)
-            edit_clicked()
-        
-        def bpm_down_clicked():
-            bpm_scale.set(bpm_scale.get() - 1)
 
-        def bpm_up_clicked():
-            bpm_scale.set(bpm_scale.get() + 1)
-
-        curInd = curIndex
-        curName = df['Name'][curInd]
-        curChords = df['Chords'][curInd]
-        curTime = df['Time Signature'][curInd]
-        curKey = df['Key'][curInd]
-        curBPM = int(df['BPM'][curInd])
-        cur = ChordProgression(curName, curChords, curTime, curKey, curBPM)
-        
-        clearWindow()
-
-
-        bpmFrame = tk.Frame(root, bg='light yellow')
-        bpmFrame.pack(pady=5)
-        bpm_down = ttk.Button(bpmFrame, text="<<", width=3, command=bpm_down_clicked)
-        bpm_down.pack(side='left', padx=2)
-        bpm_scale = tk.Scale(bpmFrame, from_=30, to=250, orient='horizontal', length=300, label="BPM")
-        bpm_scale.set(curBPM)
-        bpm_scale.pack(side='left', padx=2)
-        bpm_up = ttk.Button(bpmFrame, text=">>", width=3, command=bpm_up_clicked)
-        bpm_up.pack(side='left', padx=2)
-
-        lbl_timeSig = ttk.Label(root, text="Time Signature: " + curTime, font=('Helvetica', 10), background='light yellow')
-        lbl_timeSig.pack(pady=10)
-
-        if curTime == "4/4":
-            ts_44()
-        else:
-            ts_68()
-
-        for i in range(0, len(chordProgCB)):
-            cb = ttk.Combobox(chordProgCB[i])
-            index = 0
-            if cur.chordProg[index] == '|':
-                index += 1
-            else:
-                cb.current(chords.index(cur.chordProg[index]))
-
-        buttonFrame = tk.Frame(root, bg='light yellow')
+        buttonFrame = ctk.CTkFrame(bottomFrame2, fg_color=battleship_gray)
         buttonFrame.pack(pady=5)
-        saveButton = ttk.Button(buttonFrame, text="Save Changes", width=15, command=save_edit_clicked)
+        saveButton = ctk.CTkButton(buttonFrame, text="Save Changes", width=80, fg_color=mint_green, 
+                                   hover_color='white', font=('Roboto', 14, 'bold'), text_color='black', command=save_edit_clicked)
         saveButton.pack(side='left', padx=2)
-        cancelButton = ttk.Button(buttonFrame, text="Cancel", width=15, command=cancel_clicked)
+        cancelButton = ctk.CTkButton(buttonFrame, text="Cancel", width=80, fg_color=mint_green, 
+                                   hover_color='white', font=('Roboto', 14, 'bold'), text_color='black', command=cancel_clicked)
         cancelButton.pack(side='left', padx=2)
-        warningLabel = ttk.Label(root, text="", font=('Helvetica', 10), background='light yellow')
-        warningLabel.pack(pady=10)
+        warningLabel = ctk.CTkLabel(bottomFrame2, text="", font=('Helvetica', 10), text_color='red')
+        warningLabel.pack(pady=(5,10))
         
         
     # Library Screen
@@ -446,10 +435,10 @@ def lib_clicked():
     scroll = ttk.Scrollbar(bottomFrame1)
     lib_list_var = tk.Variable(value=cp_names)
     lib_list = tk.Listbox(bottomFrame1, yscrollcommand=scroll.set, listvariable=lib_list_var, 
-                          font=('Roboto', 14, 'bold'), bg='#DDF2EB', height=350)
+                          font=('Roboto', 14, 'bold'), bg='#DDF2EB', height=350, width=15)
     lib_list.bind('<Double-1>', doubleclick_lb)
-    lib_list.pack(side='left', fill='y', padx=(30,0), pady=20)
-    scroll.pack(side='left', padx=(5,20))
+    lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
+    scroll.pack(side='left', padx=(5,10))
 
     bottomFrame2 = ctk.CTkFrame(bottomFrame, fg_color='#88958D', width=400)
     bottomFrame2.pack(side='left', padx=(0,5), pady=5, fill='both', expand=True)
