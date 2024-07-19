@@ -1,11 +1,12 @@
 from transposer import *
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 from chordprog import *
 from view import *
 from database import *
 import customtkinter as ctk
+import time
+
 
 battleship_gray = '#88958D'
 ebony = '#606D5D'
@@ -187,7 +188,92 @@ def create_new_clicked():
 
 
 def play_clicked():
-    print("Play")
+
+    clearWindow()
+    topFrame = ctk.CTkFrame(root)
+    topFrame.pack(fill='x')
+    topFrame1 = ctk.CTkFrame(topFrame, width=500, fg_color=ebony)
+    topFrame1.pack(fill='both', pady=(5, 2.5), padx=5)
+    create_flow_title = ctk.CTkLabel(topFrame1, text="Create Flow", font=('Roboto', 22, 'bold'), text_color='white', height=40)
+    create_flow_title.pack()
+
+    cp_names = []
+    for ind in df.index:
+        cp_names.append(df['Name'][ind])
+    cp_names.sort()
+
+    bottomFrame = ctk.CTkFrame(root)
+    bottomFrame.pack(fill='both')
+    bottomFrame1 = ctk.CTkFrame(bottomFrame, fg_color=battleship_gray)
+    bottomFrame1.pack(side='left', padx=5, pady=5, fill='y')
+
+    def doubleclick_lb(event):
+        curSelection = lib_list.curselection()
+        tmp = df[df['Name'] == lib_list.get(curSelection)].index.values
+        global curIndex
+        curIndex = tmp[0]
+        global origKey
+        origKey = df['Key'][curIndex]
+        txt_chords = df['Chords'][curIndex]
+        txt_key = "Key: " + df['Key'][curIndex]
+        txt_bpm = "BPM: " + str(df['BPM'][curIndex])
+        txt_ts = "Time Signature: " + df['Time Signature'][curIndex]
+
+        lbl_cur_sel.configure(text=lib_list.get(curSelection))
+        lbl_cur_chords.configure(text=txt_chords)
+        lbl_cur_key.configure(text=txt_key)
+        lbl_cur_bpm.configure(text=txt_bpm)
+        lbl_cur_ts.configure(text=txt_ts)
+        addButton.pack(pady=10)
+
+
+    scroll = ttk.Scrollbar(bottomFrame1)
+    lib_list_var = tk.Variable(value=cp_names)
+    lib_list = tk.Listbox(bottomFrame1, yscrollcommand=scroll.set, listvariable=lib_list_var, 
+                          font=('Roboto', 14, 'bold'), bg=mint_green, height=350, width=20)
+    lib_list.bind('<Double-1>', doubleclick_lb)
+    lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
+    scroll.pack(side='left', padx=(5,10))
+
+    bottomFrame2 = ctk.CTkFrame(bottomFrame)
+    bottomFrame2.pack(side='left', pady=5, padx=5, fill='both', expand=True)
+
+    infoFrame = ctk.CTkFrame(bottomFrame2, fg_color=battleship_gray)
+    infoFrame.pack(fill='x', expand=True)
+
+    flowFrame = ctk.CTkFrame(bottomFrame2, fg_color='gray')
+    flowFrame.pack(fill='x', expand=True, pady=(5,0))
+
+    lbl_cur_sel = ctk.CTkLabel(infoFrame, text="", font=('Roboto', 16, 'bold'), fg_color=battleship_gray)
+    lbl_cur_sel.pack(pady=(10,2.5))
+
+    lbl_cur_key = ctk.CTkLabel(infoFrame, text="", font=('Roboto', 12, 'bold'), fg_color=battleship_gray)
+    lbl_cur_key.pack(pady=2.5)
+
+    lbl_cur_bpm = ctk.CTkLabel(infoFrame, text="", font=('Roboto', 12, 'bold'), fg_color=battleship_gray)
+    lbl_cur_bpm.pack(pady=2.5)
+
+    lbl_cur_ts = ctk.CTkLabel(infoFrame, text="", font=('Roboto', 12, 'bold'), fg_color=battleship_gray)
+    lbl_cur_ts.pack(pady=2.5)
+
+    lbl_cur_chords = ctk.CTkLabel(infoFrame, text="", font=('Roboto', 14, 'bold'), fg_color=battleship_gray)
+    lbl_cur_chords.pack(pady=2.5)
+
+    def add_clicked():
+        flowList.append(lbl_cur_sel._text)
+        print(flowList)
+
+    addButton = ctk.CTkButton(infoFrame, text='Add', text_color='black', fg_color=mint_green, hover_color='white',
+                               font=('Roboto', 16, 'bold'), width = 80, corner_radius=10, command=add_clicked)
+    
+    lbl_flow = ctk.CTkLabel(flowFrame, text="Current Flow", text_color='white', fg_color='gray', font=('Roboto', 16, 'bold'))
+    lbl_flow.pack(pady=5)
+    flowList = []
+    flowScroll = ttk.Scrollbar(flowFrame)
+    flow_var = tk.Variable(value=flowList)
+    flow = tk.Listbox(flowFrame, yscrollcommand=flowScroll.set, listvariable=flow_var, 
+                          font=('Roboto', 14, 'bold'), height=60, width=20)
+    flow.pack(side='left', padx=20, pady=(5,20))
 
 def lib_clicked():
 
