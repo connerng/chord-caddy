@@ -240,7 +240,6 @@ def lib_clicked():
     def delete_clicked():
         cs = lib_list.curselection()
         curIndex = df[df['Name'] == lib_list.get(cs)].index.values
-        print(curIndex[0])
         Delete(curIndex[0])
         lib_clicked()
 
@@ -303,7 +302,7 @@ def lib_clicked():
             lbl_bpm.configure(text="BPM: " + str(int(bpm_scale.get())))
 
         bpmFrame = ctk.CTkFrame(bottomFrame2, fg_color=battleship_gray)
-        lbl_bpm = ctk.CTkLabel(bottomFrame2, text="BPM: 100", font=('Roboto', 16, 'bold'), fg_color=battleship_gray)
+        lbl_bpm = ctk.CTkLabel(bottomFrame2, text="BPM: " + str(curBPM), font=('Roboto', 16, 'bold'), fg_color=battleship_gray)
         bpm_down = ctk.CTkButton(bpmFrame, text="<<", width=20, fg_color=ebony, hover_color='white', 
                                 text_color='black', corner_radius=10, command=bpm_down_clicked)
         bpm_scale = ctk.CTkSlider(bpmFrame, from_=30, to=250, number_of_steps=220, button_color='black', 
@@ -459,10 +458,6 @@ def lib_clicked():
     lbl_cur_chords.pack(pady=(5,20))
 
     frame_de = ctk.CTkFrame(bottomFrame2, width=100, height=20, fg_color='#88958D')    
-    del_button = ctk.CTkButton(frame_de, text="Delete", width=50, fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
-                               text_color='black', hover_color='white', command=delete_clicked)
-    edit_button = ctk.CTkButton(frame_de, text="Edit", width=50, fg_color='#DDF2EB', font=('Roboto', 16, 'bold'), 
-                                text_color='black', hover_color='white', command=edit)
 
 
 mainmenu = tk.Menu(root)
