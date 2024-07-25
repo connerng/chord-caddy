@@ -27,11 +27,3 @@ def Save():
 def Reset():
     df = pd.read_csv('chord_data.csv')
     print(df)
-
-print(df)
-# Delete("Test(G)")
-
-
-# cptest = ChordProgression("Test 1", "|C...|Am...|F...|G...|", "4/4", "C", 75)
-# AddNew(cptest)
-# print(df)

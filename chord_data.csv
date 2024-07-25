@@ -1,6 +1,4 @@
 Name,Key,BPM,Time Signature,Chords
-Make Room,G,61.0,4/4,| G . . . | D . . . | Am . . . | C . . . |
-Nothing Else Intro,C,68.0,4/4,| Dm . . . | F . . . | C . . . | . . . . |
-Nothing Else Bridge,C,68.0,4/4,| Dm . . . | F . . . | Am . . . | G . . . |
-Pursue Intro,G,144.0,4/4,| Em . . . | G . . . | Em . . . | G . . . |
-Gratitude Chorus,C,155.0,6/8,| C . . . . . | G . . . . . | F . . . . . | Am . . G . . |
+Default 1,C,100.0,4/4,| C . . . | G . . . | Am . . . | F . . . |
+Default 2,D,100.0,4/4,| Bm . . . | A . . . | D . . . | G . . . |
+Default 3,G,100.0,6/8,| G . . . . . | D . . . . . | C . . . . . | Em . . D . . |

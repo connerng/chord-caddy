@@ -2,11 +2,8 @@ from transposer import *
 import tkinter as tk
 from tkinter import ttk
 from chordprog import *
-from view import *
 from database import *
 import customtkinter as ctk
-import time
-from PIL import Image
 
 
 battleship_gray = '#88958D'
@@ -15,7 +12,6 @@ french_gray = '#D3CDD7'
 mint_green = '#DDF2EB'
 tan = '#fff1d9'
 
-play_icon = Image.open("play_icon.jpeg")
 
 root = ctk.CTk()
 root.title("Chord Caddy")
@@ -190,77 +186,77 @@ def create_new_clicked():
     warningLabel.pack(pady=(0,10))
 
 
-def play_clicked():
+# def play_clicked():
 
-    clearWindow()
-    topFrame = ctk.CTkFrame(root)
-    topFrame.pack(fill='x')
-    topFrame1 = ctk.CTkFrame(topFrame, width=500, fg_color=ebony)
-    topFrame1.pack(fill='both', pady=(5, 2.5), padx=5)
-    create_flow_title = ctk.CTkLabel(topFrame1, text="Play", font=('Roboto', 22, 'bold'), text_color='white', height=40)
-    create_flow_title.pack()
+#     clearWindow()
+#     topFrame = ctk.CTkFrame(root)
+#     topFrame.pack(fill='x')
+#     topFrame1 = ctk.CTkFrame(topFrame, width=500, fg_color=ebony)
+#     topFrame1.pack(fill='both', pady=(5, 2.5), padx=5)
+#     create_flow_title = ctk.CTkLabel(topFrame1, text="Play", font=('Roboto', 22, 'bold'), text_color='white', height=40)
+#     create_flow_title.pack()
 
-    cp_names = []
-    for ind in df.index:
-        cp_names.append(df['Name'][ind])
-    cp_names.sort()
+#     cp_names = []
+#     for ind in df.index:
+#         cp_names.append(df['Name'][ind])
+#     cp_names.sort()
 
-    bottomFrame = ctk.CTkFrame(root)
-    bottomFrame.pack(fill='both')
-    bottomFrame1 = ctk.CTkFrame(bottomFrame, fg_color=battleship_gray)
-    bottomFrame1.pack(side='left', padx=5, pady=5, fill='y')
+#     bottomFrame = ctk.CTkFrame(root)
+#     bottomFrame.pack(fill='both')
+#     bottomFrame1 = ctk.CTkFrame(bottomFrame, fg_color=battleship_gray)
+#     bottomFrame1.pack(side='left', padx=5, pady=5, fill='y')
 
-    def doubleclick_lb(event):
-        curSelection = lib_list.curselection()
-        tmp = df[df['Name'] == lib_list.get(curSelection)].index.values
-        global curIndex
-        curIndex = tmp[0]
-        global origKey
-        origKey = df['Key'][curIndex]
-        txt_chords = df['Chords'][curIndex]
-        txt_key = "Key: " + df['Key'][curIndex]
-        txt_bpm = "BPM: " + str(df['BPM'][curIndex])
-        txt_ts = "Time Signature: " + df['Time Signature'][curIndex]
+#     def doubleclick_lb(event):
+#         curSelection = lib_list.curselection()
+#         tmp = df[df['Name'] == lib_list.get(curSelection)].index.values
+#         global curIndex
+#         curIndex = tmp[0]
+#         global origKey
+#         origKey = df['Key'][curIndex]
+#         txt_chords = df['Chords'][curIndex]
+#         txt_key = "Key: " + df['Key'][curIndex]
+#         txt_bpm = "BPM: " + str(df['BPM'][curIndex])
+#         txt_ts = "Time Signature: " + df['Time Signature'][curIndex]
 
-        lbl_cur_sel.configure(text=lib_list.get(curSelection))
-        lbl_cur_key.configure(text=txt_key)
-        lbl_cur_bpm.configure(text=txt_bpm)
-        lbl_cur_ts.configure(text=txt_ts)
-        playButton.pack()
+#         lbl_cur_sel.configure(text=lib_list.get(curSelection))
+#         lbl_cur_key.configure(text=txt_key)
+#         lbl_cur_bpm.configure(text=txt_bpm)
+#         lbl_cur_ts.configure(text=txt_ts)
+#         playButton.pack()
 
-    lib_list_var = tk.Variable(value=cp_names)
-    lib_list = tk.Listbox(bottomFrame1, listvariable=lib_list_var, 
-                          font=('Roboto', 14, 'bold'), bg=mint_green, height=350, width=15)
-    scroll = ctk.CTkScrollbar(bottomFrame1, command=lib_list.yview, button_color=mint_green, height=100, 
-                                      button_hover_color='dark gray')
-    lib_list.configure(yscrollcommand=scroll.set)
-    lib_list.bind('<Double-1>', doubleclick_lb)
-    lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
-    scroll.pack(side='left', padx=(5,10))
+#     lib_list_var = tk.Variable(value=cp_names)
+#     lib_list = tk.Listbox(bottomFrame1, listvariable=lib_list_var, 
+#                           font=('Roboto', 14, 'bold'), bg=mint_green, height=350, width=15)
+#     scroll = ctk.CTkScrollbar(bottomFrame1, command=lib_list.yview, button_color=mint_green, height=100, 
+#                                       button_hover_color='dark gray')
+#     lib_list.configure(yscrollcommand=scroll.set)
+#     lib_list.bind('<Double-1>', doubleclick_lb)
+#     lib_list.pack(side='left', fill='y', padx=(20,0), pady=20)
+#     scroll.pack(side='left', padx=(5,10))
 
-    bottomFrame2 = ctk.CTkFrame(bottomFrame, fg_color='gray')
-    bottomFrame2.pack(side='left', pady=5, padx=5, fill='both', expand=True)
+#     bottomFrame2 = ctk.CTkFrame(bottomFrame, fg_color='gray')
+#     bottomFrame2.pack(side='left', pady=5, padx=5, fill='both', expand=True)
 
-    lbl_cur_sel = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 20, 'bold'), fg_color='gray')
-    lbl_cur_sel.pack(pady=(10,2.5))
+#     lbl_cur_sel = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 20, 'bold'), fg_color='gray')
+#     lbl_cur_sel.pack(pady=(10,2.5))
 
-    lbl_cur_key = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 12, 'bold'), fg_color='gray')
-    lbl_cur_key.pack(pady=2.5)
+#     lbl_cur_key = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 12, 'bold'), fg_color='gray')
+#     lbl_cur_key.pack(pady=2.5)
 
-    lbl_cur_bpm = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 12, 'bold'), fg_color='gray')
-    lbl_cur_bpm.pack(pady=2.5)
+#     lbl_cur_bpm = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 12, 'bold'), fg_color='gray')
+#     lbl_cur_bpm.pack(pady=2.5)
 
-    lbl_cur_ts = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 12, 'bold'), fg_color='gray')
-    lbl_cur_ts.pack(pady=2.5)
+#     lbl_cur_ts = ctk.CTkLabel(bottomFrame2, text="", font=('Roboto', 12, 'bold'), fg_color='gray')
+#     lbl_cur_ts.pack(pady=2.5)
 
-    def play():
-        print('play', lbl_cur_sel._text)
+#     def play():
+#         print('play', lbl_cur_sel._text)
 
-    buttonFrame = ctk.CTkFrame(bottomFrame2, fg_color='gray')
-    buttonFrame.pack(pady=10)
-    playButton = ctk.CTkButton(buttonFrame, text="Play", font=('Roboto', 16, 'bold'), text_color='black', 
-                               fg_color=mint_green, hover_color='white', height=30, width=30, corner_radius=10, 
-                               border_color='white', border_width=2, command=play)
+#     buttonFrame = ctk.CTkFrame(bottomFrame2, fg_color='gray')
+#     buttonFrame.pack(pady=10)
+#     playButton = ctk.CTkButton(buttonFrame, text="Play", font=('Roboto', 16, 'bold'), text_color='black', 
+#                                fg_color=mint_green, hover_color='white', height=30, width=30, corner_radius=10, 
+#                                border_color='white', border_width=2, command=play)
 
     
 
@@ -539,7 +535,7 @@ def lib_clicked():
 
 mainmenu = tk.Menu(root)
 mainmenu.add_command(label = "Create New", command = create_new_clicked)
-mainmenu.add_command(label = "Play", command=play_clicked)
+# mainmenu.add_command(label = "Play", command=play_clicked)
 mainmenu.add_command(label = "Library", command=lib_clicked)
 root.config(menu = mainmenu)
 
@@ -548,7 +544,7 @@ def clearWindow():
         widget.destroy()
     mainmenu = tk.Menu(root)
     mainmenu.add_command(label = "Create New", command = create_new_clicked)
-    mainmenu.add_command(label = "Play", command=play_clicked)
+    # mainmenu.add_command(label = "Play", command=play_clicked)
     mainmenu.add_command(label = "Library", command=lib_clicked)
     root.config(menu = mainmenu)
 
