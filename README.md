@@ -1,7 +1,7 @@
 # Chord Caddy
 
 ## Project Description
-A Python Tkinter desktop application built to easily create, store, and edit chord progressions.
+A Python Tkinter desktop application built to easily create, store, edit, and transpose chord progressions.
 
 ## Preview
 <img width="447" alt="Preview" src="https://github.com/user-attachments/assets/6ec3ea54-2e01-4b54-930a-42fd753e9ace">
